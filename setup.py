@@ -11,7 +11,8 @@ setup(
     packages=['isystem-tom-qtt'],
     scripts=['bin/poll_isystem_mqtt.py'],
     url='https://github.com/ngraziano/isystem-to-mqtt',
-#    license='LICENSE.txt',
+    install_requires=['MinimalModbus', 'paho-mqtt'],
+    # license='LICENSE.txt',
     description='Request Isystem boiler and send value to mqtt',
-#    long_description=open('README.md').read(),
+    # long_description=open('README.md').read(),
 )
