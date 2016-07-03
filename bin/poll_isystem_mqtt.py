@@ -3,7 +3,6 @@
 
 import argparse
 import ssl
-import time
 import queue
 import minimalmodbus
 
@@ -70,9 +69,9 @@ parser.add_argument("--password", help="MQtt password.")
 parser.add_argument("--interval", help="Check interval.", type=int, default=60)
 parser.add_argument("--tls12", help="use TLS 1.2", dest="tls",
                     action="store_const", const=ssl.PROTOCOL_TLSv1_2)
-parser.add_argument("--cacert", help="CA Certificate.",  default="/etc/ssl/certs/ca-certificates.crt")
-parser.add_argument("--serial", help="Serial interface",  default="/dev/ttyUSB0")
-parser.add_argument("--deviceid", help="Modbus device id", type=int,  default=10)
+parser.add_argument("--cacert", help="CA Certificate.", default="/etc/ssl/certs/ca-certificates.crt")
+parser.add_argument("--serial", help="Serial interface", default="/dev/ttyUSB0")
+parser.add_argument("--deviceid", help="Modbus device id", type=int, default=10)
 args = parser.parse_args()
 
 # Initialisation of mqtt client
@@ -148,4 +147,4 @@ while True:
             waittime = 0
     except queue.Empty:
         continue
-#   time.sleep(args.interval)
+
