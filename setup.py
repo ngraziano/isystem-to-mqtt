@@ -6,9 +6,9 @@ from setuptools import setup, find_packages
 setup(
     name='isystem-to-mqtt',
     version='0.1.0',
-    author='Mickael Le Baillif',
+    author='Nicolas Graziano',
     author_email='nicolas.graziano+py@gmail.com',
-    # packages=['isystem-tom-qtt'],
+    # packages= find_packages(),
     scripts=['bin/poll_isystem_mqtt.py'],
     url='https://github.com/ngraziano/isystem-to-mqtt',
     install_requires=['MinimalModbus', 'paho-mqtt'],
