@@ -8,59 +8,7 @@ import minimalmodbus
 
 import paho.mqtt.client as mqtt
 
-class TagDefinition(object):
-    """ Define a tag with mqtt topic and convertion """
-
-    def __init__(self, tag_name, convertion, needed_value=1):
-        self.tag_name = tag_name
-        self.convertion = convertion
-        self.needed_value = needed_value
-
-class WriteTagDefinition(object):
-    """ Define a tag to write with address and convertion """
-
-    def __init__(self, address, convertion):
-        self.address = address
-        self.convertion = convertion
-
-
-
-def convert_none(raw_table, base_index):
-    return raw_table[base_index]
-
-
-def convert_tenth(raw_table, base_index):
-    return raw_table[base_index] / 10
-
-
-def convert_unit_and_ten(raw_table, base_index):
-    return (raw_table[base_index] + 10 * raw_table[base_index + 1])
-
-
-value_table = {
-    231: TagDefinition("zone-a/program", convert_none),
-    507: TagDefinition("boiler/start-count", convert_unit_and_ten),
-    509: TagDefinition("boiler/hours-count", convert_unit_and_ten),
-    601: TagDefinition("outside/temperature", convert_tenth),
-    602: TagDefinition("boiler/temperature", convert_tenth),
-    607: TagDefinition("boiler/return-temperature", convert_tenth),
-    610: TagDefinition("boiler/pressure", convert_tenth),
-    614: TagDefinition("zone-a/temperature", convert_tenth),
-    615: TagDefinition("zone-a/calculated-temperature", convert_tenth),
-    620: TagDefinition("boiler/calculated-temperature", convert_tenth),
-    650: TagDefinition("zone-a/day-target-temperature", convert_tenth),
-    651: TagDefinition("zone-a/night-target-temperature", convert_tenth),
-    652: TagDefinition("zone-a/antifreeze-target-temperature", convert_tenth)
-}
-
-
-def write_convert_none(value):
-    return [int(value)]
-
-
-write_table = {
-    "zone-a/program/SET" : WriteTagDefinition(231, write_convert_none)  
-}
+from isystem_to_mqtt.tables import READ_TABLE, WRITE_TABLE
 
 parser = argparse.ArgumentParser() 
 parser.add_argument("server", help="MQtt server to connect to.")
@@ -87,12 +35,7 @@ if args.tls:
     client.tls_set(args.cacert,tls_version=args.tls)
     port_mqtt = 8883
 
-client.will_set(base_topic + "reading", "OFF", 1, True);
-
-client.connect(args.server, port_mqtt)
-client.loop_start()
-
-client.publish(base_topic + "reading", "ON", 1, True);
+client.will_set(base_topic + "reading", "OFF", 1, True)
 
 write_queue = queue.Queue()
 
@@ -101,7 +44,18 @@ def on_message(the_client, userdata, message):
 
 client.on_message = on_message
 
-client.subscribe(base_topic+"zone-a/program/SET")
+subscribe_list = [(base_topic + name, 0) for name in WRITE_TABLE.keys()]
+
+def on_connect(the_client, userdata, flags, rc):
+    if (rc==mqtt.CONNACK_ACCEPTED):
+        the_client.subscribe(subscribe_list)
+
+client.on_connect = on_connect
+
+client.connect(args.server, port_mqtt)
+client.loop_start()
+
+client.publish(base_topic + "reading", "ON", 1, True)
 
 
 # Initialisation of Modbus
@@ -124,19 +78,20 @@ def read_zone(base_address, number_of_value):
     else:
         for index in range(0, number_of_value):
             address = base_address + index
-            tag_definition = value_table.get(address)
+            tag_definition = READ_TABLE.get(address)
             if tag_definition:
                 value = tag_definition.convertion(raw_values, index)
                 print("value {}  = {}".format(tag_definition.tag_name, value))
                 client.publish(base_topic + tag_definition.tag_name, value, retain=True)
 
 def write_value(message):
-    tag_definition = write_table.get(message.topic.strip(base_topic))
+    tag_definition = WRITE_TABLE.get(message.topic.strip(base_topic))
     if tag_definition:
         value = tag_definition.convertion(message.payload)
         print("write value {} : add : {} = {}".format(message.topic.strip(base_topic), tag_definition.address ,value))
         instrument.write_registers(tag_definition.address,value)
 
+# Main loop
 while True:
     read_zone(600, 21)
     read_zone(507, 4)

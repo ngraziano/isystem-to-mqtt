@@ -8,11 +8,11 @@ setup(
     version='0.1.0',
     author='Nicolas Graziano',
     author_email='nicolas.graziano+py@gmail.com',
-    # packages= find_packages(),
+    packages= find_packages(),
     scripts=['bin/poll_isystem_mqtt.py'],
     url='https://github.com/ngraziano/isystem-to-mqtt',
     install_requires=['MinimalModbus', 'paho-mqtt'],
-    # license='LICENSE.txt',
+    license='LICENSE',
     description='Request Isystem boiler and send value to mqtt',
     # long_description=open('README.md').read(),
 )
