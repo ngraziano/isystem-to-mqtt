@@ -86,9 +86,13 @@ if args.user:
 if args.tls:
     client.tls_set(args.cacert,tls_version=args.tls)
     port_mqtt = 8883
+
+client.will_set(base_topic + "reading", "OFF", 1, True);
+
 client.connect(args.server, port_mqtt)
 client.loop_start()
 
+client.publish(base_topic + "reading", "ON", 1, True);
 
 write_queue = queue.Queue()
 
