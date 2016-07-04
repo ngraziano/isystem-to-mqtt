@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 
 from isystem_to_mqtt.tables import READ_TABLE, WRITE_TABLE
 
-parser = argparse.ArgumentParser() 
+parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
 parser.add_argument("--user", help="MQtt username.")
 parser.add_argument("--password", help="MQtt password.")

@@ -1,4 +1,4 @@
-from ..tag_definition import TagDefinition, WriteTagDefinition
+from .tag_definition import TagDefinition, WriteTagDefinition
 from . import convert
 
 READ_TABLE = {
