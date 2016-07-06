@@ -5,10 +5,13 @@ import argparse
 import ssl
 import queue
 import minimalmodbus
+import logging
 
 import paho.mqtt.client as mqtt
 
 from isystem_to_mqtt.tables import READ_TABLE, WRITE_TABLE
+
+logging.basicConfig()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
@@ -80,9 +83,7 @@ def read_zone(base_address, number_of_value):
             address = base_address + index
             tag_definition = READ_TABLE.get(address)
             if tag_definition:
-                value = tag_definition.convertion(raw_values, index)
-                print("value {}  = {}".format(tag_definition.tag_name, value))
-                client.publish(base_topic + tag_definition.tag_name, value, retain=True)
+                tag_definition.publish(client, base_topic, raw_values, index)
 
 def write_value(message):
     tag_definition = WRITE_TABLE.get(message.topic.strip(base_topic))
