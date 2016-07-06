@@ -18,9 +18,10 @@ READ_TABLE = {
     653: TagDefinition("zone-a/mode", convert.derog_bit),
     654: TagDefinition("zone-a/sensor-influence", convert.unit),
     655: TagDefinition("zone-a/curve", convert.tenth),
-    656: TagDefinition("zone-b/night-target-temperature", convert.tenth),
-    657: TagDefinition("zone-b/antifreeze-target-temperature", convert.tenth),
-    658: TagDefinition("zone-b/mode", convert.derog_bit)
+    656: TagDefinition("zone-b/day-target-temperature", convert.tenth),
+    657: TagDefinition("zone-b/night-target-temperature", convert.tenth),
+    658: TagDefinition("zone-b/antifreeze-target-temperature", convert.tenth),
+    659: TagDefinition("zone-b/mode", convert.derog_bit)
 }
 
 WRITE_TABLE = {
