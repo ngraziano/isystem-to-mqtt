@@ -26,7 +26,7 @@ class MultipleTagDefinition(object):
 
     def publish(self, client, base_topic, raw_values, index):
         """ Publish the converted value to mqtt using client parameter"""
-        for (convertion,tag_name) in self.definition_list:
+        for (tag_name, convertion) in self.definition_list:
             value = convertion(raw_values, index)
             _LOGGER.debug("value %s  = %s", tag_name, value)
             client.publish(base_topic + tag_name, value, retain=True)
