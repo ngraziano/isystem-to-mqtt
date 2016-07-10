@@ -28,6 +28,8 @@ READ_TABLE = {
 
 WRITE_TABLE = {
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
+    "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
-    "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth)
+    "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
+    "zone-b/mode-raw/SET": WriteTagDefinition(659, convert.write_unit)
 }
