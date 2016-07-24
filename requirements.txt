@@ -1,2 +1,3 @@
 python-coveralls
 coverage
+paho.mqtt.client

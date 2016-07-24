@@ -32,7 +32,7 @@ class TestConvertTenth(unittest.TestCase):
     def test_no_value(self):
         """ Simple test for special no value """
         value = convert.tenth([10, 32792, 0xFFFF, 13], 2)
-        self.assertEqual(None,value)
+        self.assertEqual(None, value)
 
 class TestConvertUnitAndTen(unittest.TestCase):
     """ Test unit_and_ten function """
