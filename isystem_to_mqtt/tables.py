@@ -1,3 +1,5 @@
+""" Definition of Modbus adress and convertions to apply """
+
 from .tag_definition import TagDefinition, WriteTagDefinition, MultipleTagDefinition
 from . import convert
 
@@ -24,8 +26,9 @@ READ_TABLE = {
     658: TagDefinition("zone-b/antifreeze-target-temperature", convert.tenth),
     659: MultipleTagDefinition([("zone-b/mode", convert.derog_bit),
                                 ("zone-b/mode-raw", convert.unit)]),
-    721: TagDefinition("zone-a/antifreeze-duration", convert.unit)
- 
+    721: TagDefinition("zone-a/antifreeze-duration", convert.unit),
+    724: TagDefinition("zone-b/antifreeze-duration", convert.unit)
+
 }
 
 WRITE_TABLE = {
@@ -34,5 +37,6 @@ WRITE_TABLE = {
     "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
     "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
-    "zone-b/mode-raw/SET": WriteTagDefinition(659, convert.write_unit)
+    "zone-b/mode-raw/SET": WriteTagDefinition(659, convert.write_unit),
+    "zone-b/antifreeze-duration/SET": WriteTagDefinition(724, convert.write_unit)
 }
