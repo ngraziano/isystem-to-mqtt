@@ -8,6 +8,8 @@ def unit(raw_table, base_index):
 def tenth(raw_table, base_index):
     """ Word value divide by ten """
     raw_value = raw_table[base_index]
+    if raw_value == 0xFFFF:
+        return None
     sign = 1
     if raw_value & 0x8000:
         sign = -1

@@ -26,9 +26,13 @@ class TestConvertTenth(unittest.TestCase):
         value = convert.tenth([10, 11, 12, 13], 2)
         self.assertEqual(1.2, value)
     def test_negative_value(self):
-        """ Simple test not first value """
+        """ Simple test negative value """
         value = convert.tenth([10, 32792, 12, 13], 1)
         self.assertEqual(-2.4, value)
+    def test_no_value(self):
+        """ Simple test for special no value """
+        value = convert.tenth([10, 32792, 0xFFFF, 13], 2)
+        self.assertEqual(None,value)
 
 class TestConvertUnitAndTen(unittest.TestCase):
     """ Test unit_and_ten function """
