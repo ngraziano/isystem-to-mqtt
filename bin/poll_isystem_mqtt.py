@@ -86,10 +86,6 @@ instrument.serial.timeout = 1
 instrument.debug = False   # True or False
 instrument.mode = minimalmodbus.MODE_RTU
 
-serial_port = serial.Serial(port=args.serial,
-                            baudrate=9600, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-                            stopbits=serial.STOPBITS_ONE)
-serial_port.close()
 
 def wait_time_slot():
     # if not in bimaster mode no need to wait
@@ -97,23 +93,24 @@ def wait_time_slot():
         return
     # peer is master for 5s then we can be master for 5s
     # timeout to 200ms
-    serial_port.timeout = 0.2
+    instrument.serial.timeout = 0.2
     # read until boiler is master
-    serial_port.open()
+    instrument.serial.open()
     data = b''
     number_of_wait = 0
     _LOGGER.debug("Wait the peer to be master.")
     #wait a maximum of 6 seconds
     while len(data) == 0 and number_of_wait < 30:
-        data = serial_port.read(100)
+        data = instrument.serial.read(100)
         number_of_wait += 1
     if number_of_wait >= 30:
         _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
     # the master is the boiler wait for the end of data
     _LOGGER.debug("Wait the peer to be slave.")
     while len(data) != 0:
-        data = serial_port.read(10)
-    serial_port.close()
+        data = instrument.serial.read(10)
+    instrument.serial.close()
+    instrument.serial.timeout = 1
     _LOGGER.debug("We are master.")
     # we are master for a maximum of  4.8s (5s - 200ms)
 
