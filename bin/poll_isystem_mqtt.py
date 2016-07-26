@@ -54,14 +54,12 @@ subscribe_list = [(base_topic + name, 0) for name in WRITE_TABLE.keys()]
 def on_connect(the_client, userdata, flags, rc):
     if rc == mqtt.CONNACK_ACCEPTED:
         the_client.subscribe(subscribe_list)
+        client.publish(base_topic + "reading", "ON", 1, True)
 
 client.on_connect = on_connect
 
 client.connect(args.server, port_mqtt)
 client.loop_start()
-
-client.publish(base_topic + "reading", "ON", 1, True)
-
 
 # Initialisation of Modbus
 minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
