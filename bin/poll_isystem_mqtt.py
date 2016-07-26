@@ -5,6 +5,7 @@ import argparse
 import queue
 import logging
 import ssl
+import serial
 
 import minimalmodbus
 import paho.mqtt.client as mqtt
@@ -26,6 +27,8 @@ parser.add_argument("--deviceid", help="Modbus device id, default 10",
                     type=int, default=10)
 parser.add_argument("--log", help="Logging level, default INFO",
                     default="INFO")
+parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)",
+                     action="store_true")
 args = parser.parse_args()
 
 # Convert to upper case to allow the user to
@@ -34,6 +37,9 @@ numeric_level = getattr(logging, args.log.upper(), None)
 if not isinstance(numeric_level, int):
     raise ValueError("Invalid log level: {0}".format(args.log))
 logging.basicConfig(level=numeric_level)
+
+_LOGGER = logging.getLogger(__name__)
+
 
 # Initialisation of mqtt client
 base_topic = "heating/"
@@ -80,11 +86,38 @@ instrument.serial.timeout = 1
 instrument.debug = False   # True or False
 instrument.mode = minimalmodbus.MODE_RTU
 
+serial_port = serial.Serial(port=args.serial,
+                            baudrate=9600, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
+                            stopbits=serial.STOPBITS_ONE)
+
+def wait_time_slot():
+    # peer is master for 5s then we can be master for 5s
+    # timeout to 200ms
+    serial_port.timeout = 0.2
+    # read until boiler is master
+    serial_port.open()
+    data = b''
+    number_of_wait = 0
+    _LOGGER.debug("Wait the peer to be master.")
+    #wait a maximum of 6 seconds
+    while len(data) == 0 or number_of_wait < 30:
+        data = serial_port.read(10)
+        number_of_wait += 1
+    if number_of_wait >= 30:
+        _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
+    # the master is the boiler wait for the end of data
+    _LOGGER.debug("Wait the peer to be slave.")
+    while len(data) != 0:
+        data = serial_port.read(10)
+    serial_port.close()
+    _LOGGER.debug("We are master.")
+    # we are master for a maximum of  4.8s (5s - 200ms)
+
 def read_zone(base_address, number_of_value):
     try:
         raw_values = instrument.read_registers(base_address, number_of_value)
     except EnvironmentError as e:
-        print ("I/O error({0}): {1}".format(e.errno, e.strerror))
+        print("I/O error({0}): {1}".format(e.errno, e.strerror))
     else:
         for index in range(0, number_of_value):
             address = base_address + index
@@ -99,6 +132,9 @@ def write_value(message):
         print("write value {} : add : {} = {}".format(message.topic.strip(base_topic), tag_definition.address, value))
         instrument.write_registers(tag_definition.address, value)
 
+if args.bimaster:
+    wait_time_slot()
+
 # Main loop
 while True:
     read_zone(600, 21)
@@ -111,6 +147,8 @@ while True:
         waittime = args.interval
         while True:
             writeelement = write_queue.get(timeout=waittime)
+            if args.bimaster:
+                wait_time_slot()
             write_value(writeelement)
             waittime = 0
     except queue.Empty:
