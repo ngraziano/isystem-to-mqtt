@@ -89,8 +89,12 @@ instrument.mode = minimalmodbus.MODE_RTU
 serial_port = serial.Serial(port=args.serial,
                             baudrate=9600, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
                             stopbits=serial.STOPBITS_ONE)
+serial_port.close()
 
 def wait_time_slot():
+    # if not in bimaster mode no need to wait
+    if not args.bimaster:
+        return
     # peer is master for 5s then we can be master for 5s
     # timeout to 200ms
     serial_port.timeout = 0.2
@@ -100,8 +104,8 @@ def wait_time_slot():
     number_of_wait = 0
     _LOGGER.debug("Wait the peer to be master.")
     #wait a maximum of 6 seconds
-    while len(data) == 0 or number_of_wait < 30:
-        data = serial_port.read(10)
+    while len(data) == 0 and number_of_wait < 30:
+        data = serial_port.read(100)
         number_of_wait += 1
     if number_of_wait >= 30:
         _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
@@ -132,8 +136,8 @@ def write_value(message):
         print("write value {} : add : {} = {}".format(message.topic.strip(base_topic), tag_definition.address, value))
         instrument.write_registers(tag_definition.address, value)
 
-if args.bimaster:
-    wait_time_slot()
+
+wait_time_slot()
 
 # Main loop
 while True:
@@ -142,15 +146,16 @@ while True:
     read_zone(650, 10)
     read_zone(231, 1)
     read_zone(721, 1)
-    # Traitement de toute les ecritures
+    # Traitement de toute les ecritures ou attente de l'intervale
     try:
         waittime = args.interval
         while True:
             writeelement = write_queue.get(timeout=waittime)
-            if args.bimaster:
-                wait_time_slot()
+           
+            wait_time_slot()
             write_value(writeelement)
             waittime = 0
     except queue.Empty:
+        wait_time_slot()
         continue
 
