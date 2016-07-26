@@ -15,14 +15,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
 parser.add_argument("--user", help="MQtt username.")
 parser.add_argument("--password", help="MQtt password.")
-parser.add_argument("--interval", help="Check interval.", type=int, default=60)
+parser.add_argument("--interval", help="Check interval default 60.", type=int, default=60)
 parser.add_argument("--tls12", help="use TLS 1.2", dest="tls",
                     action="store_const", const=ssl.PROTOCOL_TLSv1_2)
-parser.add_argument("--cacert", help="CA Certificate.",
+parser.add_argument("--cacert", help="CA Certificate, default /etc/ssl/certs/ca-certificates.crt.",
                     default="/etc/ssl/certs/ca-certificates.crt")
-parser.add_argument("--serial", help="Serial interface",
+parser.add_argument("--serial", help="Serial interface, default /dev/ttyUSB0",
                     default="/dev/ttyUSB0")
-parser.add_argument("--deviceid", help="Modbus device id",
+parser.add_argument("--deviceid", help="Modbus device id, default 10",
                     type=int, default=10)
 parser.add_argument("--log", help="Logging level, default INFO",
                     default="INFO")
