@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 import argparse
 import queue
@@ -10,8 +10,6 @@ import minimalmodbus
 import paho.mqtt.client as mqtt
 
 from isystem_to_mqtt.tables import READ_TABLE, WRITE_TABLE
-
-logging.basicConfig()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
@@ -26,7 +24,16 @@ parser.add_argument("--serial", help="Serial interface",
                     default="/dev/ttyUSB0")
 parser.add_argument("--deviceid", help="Modbus device id",
                     type=int, default=10)
+parser.add_argument("--log", help="Logging level, default INFO",
+                    default="INFO")
 args = parser.parse_args()
+
+# Convert to upper case to allow the user to
+# specify --log=DEBUG or --log=debug
+numeric_level = getattr(logging, args.log.upper(), None)
+if not isinstance(numeric_level, int):
+    raise ValueError("Invalid log level: {0}".format(args.log))
+logging.basicConfig(level=numeric_level)
 
 # Initialisation of mqtt client
 base_topic = "heating/"
