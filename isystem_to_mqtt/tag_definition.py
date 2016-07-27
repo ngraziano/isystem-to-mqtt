@@ -26,13 +26,18 @@ class MultipleTagDefinition(object):
     def __init__(self, definition_list, needed_value=1):
         self.definition_list = definition_list
         self.needed_value = needed_value
+        self.last_value = [None] * len(definition_list)
 
     def publish(self, client, base_topic, raw_values, index):
         """ Publish the converted value to mqtt using client parameter"""
+        i = 0
         for (tag_name, convertion) in self.definition_list:
             value = convertion(raw_values, index)
             _LOGGER.debug("value %s  = %s", tag_name, value)
-            client.publish(base_topic + tag_name, value, retain=True)
+            if value != self.last_value[i]:
+                client.publish(base_topic + tag_name, value, retain=True)
+                self.last_value[i] = value
+            i += 1
 
 
 class WriteTagDefinition(object):
