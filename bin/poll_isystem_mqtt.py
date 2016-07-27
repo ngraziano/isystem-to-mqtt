@@ -92,27 +92,27 @@ def wait_time_slot():
     if not args.bimaster:
         return
     # peer is master for 5s then we can be master for 5s
-    # timeout to 200ms
-    instrument.serial.timeout = 0.2
+    # timeout to 400ms
+    instrument.serial.timeout = 0.4
     # read until boiler is master
     instrument.serial.open()
     data = b''
     number_of_wait = 0
     _LOGGER.debug("Wait the peer to be master.")
     #wait a maximum of 6 seconds
-    while len(data) == 0 and number_of_wait < 30:
+    while len(data) == 0 and number_of_wait < 15:
         data = instrument.serial.read(100)
         number_of_wait += 1
-    if number_of_wait >= 30:
+    if number_of_wait >= 15:
         _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
     # the master is the boiler wait for the end of data
     _LOGGER.debug("Wait the peer to be slave.")
     while len(data) != 0:
-        data = instrument.serial.read(10)
+        data = instrument.serial.read(100)
     instrument.serial.close()
     instrument.serial.timeout = 1
     _LOGGER.debug("We are master.")
-    # we are master for a maximum of  4.8s (5s - 200ms)
+    # we are master for a maximum of  4.6s (5s - 400ms)
 
 def read_zone(base_address, number_of_value):
     try:
