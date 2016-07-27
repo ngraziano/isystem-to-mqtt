@@ -117,8 +117,10 @@ def wait_time_slot():
 def read_zone(base_address, number_of_value):
     try:
         raw_values = instrument.read_registers(base_address, number_of_value)
-    except EnvironmentError as e:
-        print("I/O error({0}): {1}".format(e.errno, e.strerror))
+    except EnvironmentError:
+        logging.exception("I/O error")
+    except ValueError:
+        logging.exception("Value error")
     else:
         for index in range(0, number_of_value):
             address = base_address + index
