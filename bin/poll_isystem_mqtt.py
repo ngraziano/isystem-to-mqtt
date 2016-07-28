@@ -5,7 +5,7 @@ import argparse
 import queue
 import logging
 import ssl
-import serial
+import time
 
 import minimalmodbus
 import paho.mqtt.client as mqtt
@@ -87,23 +87,31 @@ instrument.debug = False   # True or False
 instrument.mode = minimalmodbus.MODE_RTU
 
 
+# Bi master timeslot
+# peer is master for 5s then we can be master for 5s
+# timeout to 400ms
+
+TIME_SLOT = 5
+WAITING_TIMEOUT = 0.4
+
 def wait_time_slot():
     # if not in bimaster mode no need to wait
     if not args.bimaster:
         return
-    # peer is master for 5s then we can be master for 5s
-    # timeout to 400ms
-    instrument.serial.timeout = 0.4
+    
+    # Wait a maximum of 3 cycle SLAVE => MASTER => SLAVE
+    MAXIMUM_LOOP = 1 + int(TIME_SLOT * 3 / WAITING_TIMEOUT)
+    instrument.serial.timeout = WAITING_TIMEOUT
     # read until boiler is master
     instrument.serial.open()
     data = b''
     number_of_wait = 0
     _LOGGER.debug("Wait the peer to be master.")
     #wait a maximum of 6 seconds
-    while len(data) == 0 and number_of_wait < 15:
+    while len(data) == 0 and number_of_wait < MAXIMUM_LOOP:
         data = instrument.serial.read(100)
         number_of_wait += 1
-    if number_of_wait >= 15:
+    if number_of_wait >= MAXIMUM_LOOP:
         _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
     # the master is the boiler wait for the end of data
     _LOGGER.debug("Wait the peer to be slave.")
@@ -140,11 +148,18 @@ wait_time_slot()
 
 # Main loop
 while True:
+    # The total read time must be under the time slot duration
+    start_time = time.time()
     read_zone(600, 21)
     read_zone(507, 4)
     read_zone(650, 10)
     read_zone(231, 1)
     read_zone(721, 1)
+    duration = time.time() - start_time
+    _LOGGER.debug("Read take %1.3fs",duration)
+    if duration > TIME_SLOT-WAITING_TIMEOUT:
+        _LOGGER.warning("Read take too long, wait_time_slot must be added between read_zone.")
+
     # Traitement de toute les ecritures ou attente de l'intervale
     try:
         waittime = args.interval
