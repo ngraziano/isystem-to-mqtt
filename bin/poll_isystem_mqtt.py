@@ -139,8 +139,9 @@ def read_zone(base_address, number_of_value):
 def write_value(message):
     tag_definition = WRITE_TABLE.get(message.topic.strip(base_topic))
     if tag_definition:
-        value = tag_definition.convertion(message.payload)
-        print("write value {} : add : {} = {}".format(message.topic.strip(base_topic), tag_definition.address, value))
+        string_value = message.payload.decode("utf-8")
+        value = tag_definition.convertion(string_value)
+        print("write value {} : {} => address : {} = {}".format(message.topic.strip(base_topic), string_value, tag_definition.address, value))
         if value is not None:
             instrument.write_registers(tag_definition.address, value)
 

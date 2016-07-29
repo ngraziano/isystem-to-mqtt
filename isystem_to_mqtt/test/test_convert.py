@@ -104,10 +104,10 @@ class TestConvertWriteDerogBitSimple(unittest.TestCase):
 
     def test_simple(self):
         """ Simple test """
-        self.assertEqual(8, convert.write_derog_bit_simple("Automatique"))
-        self.assertEqual(36, convert.write_derog_bit_simple("Jour"))
-        self.assertEqual(34, convert.write_derog_bit_simple("Nuit"))
-        self.assertEqual(33, convert.write_derog_bit_simple("Vacances"))
+        self.assertEqual([8], convert.write_derog_bit_simple("Automatique"))
+        self.assertEqual([36], convert.write_derog_bit_simple("Jour"))
+        self.assertEqual([34], convert.write_derog_bit_simple("Nuit"))
+        self.assertEqual([33], convert.write_derog_bit_simple("Vacances"))
 
     def test_invalid(self):
         """ invalid value test """

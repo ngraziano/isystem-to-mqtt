@@ -87,4 +87,4 @@ def write_derog_bit_simple(value):
     """ Convert French Mode to bit value """
     if value not in DEROG_NAME_TO_VALUE:
         return None
-    return DEROG_NAME_TO_VALUE[value]
+    return [DEROG_NAME_TO_VALUE[value]]
