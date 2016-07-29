@@ -1,5 +1,6 @@
 """ Function to convert raw modbus value """
 
+
 def unit(raw_table, base_index):
     """ Direct word value """
     return raw_table[base_index]
@@ -51,7 +52,19 @@ def derog_bit(raw_table, base_index):
         stringvalue += "toutes les zones"
     return stringvalue
 
-
+def derog_bit_simple(raw_table, base_index):
+    """ Convert derog bit flag to french do not handle all case """
+    value = raw_table[base_index]
+    stringvalue = ""
+    if value & BIT_ANTIFREEZE:
+        stringvalue = "Vacances"
+    if value & BIT_NIGHT:
+        stringvalue = "Nuit"
+    if value & BIT_DAY:
+        stringvalue = "Jour"
+    if value & BIT_AUTO:
+        stringvalue = "Automatique"
+    return stringvalue
 
 def write_unit(value):
     """ Convert unit value to modbus value """
@@ -63,3 +76,15 @@ def write_tenth(value):
     if int_value < 0:
         int_value = abs(int_value) | 0x8000
     return [int_value]
+
+DEROG_NAME_TO_VALUE = {
+    "Vacances": BIT_ANTIFREEZE | BIT_END_OF_PROGRAM,
+    "Nuit" : BIT_NIGHT | BIT_END_OF_PROGRAM,
+    "Jour" : BIT_DAY | BIT_END_OF_PROGRAM,
+    "Automatique" : BIT_AUTO
+    }
+def write_derog_bit_simple(value):
+    """ Convert French Mode to bit value """
+    if value not in DEROG_NAME_TO_VALUE:
+        return None
+    return DEROG_NAME_TO_VALUE[value]

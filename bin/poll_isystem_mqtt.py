@@ -28,7 +28,7 @@ parser.add_argument("--deviceid", help="Modbus device id, default 10",
 parser.add_argument("--log", help="Logging level, default INFO",
                     default="INFO")
 parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)",
-                     action="store_true")
+                    action="store_true")
 args = parser.parse_args()
 
 # Convert to upper case to allow the user to
@@ -118,7 +118,7 @@ def wait_time_slot():
     while len(data) != 0:
         data = instrument.serial.read(100)
     instrument.serial.close()
-    instrument.serial.timeout = 1
+    instrument.serial.timeout = 1.0
     _LOGGER.debug("We are master.")
     # we are master for a maximum of  4.6s (5s - 400ms)
 
@@ -141,7 +141,8 @@ def write_value(message):
     if tag_definition:
         value = tag_definition.convertion(message.payload)
         print("write value {} : add : {} = {}".format(message.topic.strip(base_topic), tag_definition.address, value))
-        instrument.write_registers(tag_definition.address, value)
+        if value is not None:
+            instrument.write_registers(tag_definition.address, value)
 
 
 wait_time_slot()
@@ -156,7 +157,7 @@ while True:
     read_zone(231, 1)
     read_zone(721, 1)
     duration = time.time() - start_time
-    _LOGGER.debug("Read take %1.3fs",duration)
+    _LOGGER.debug("Read take %1.3fs", duration)
     if duration > TIME_SLOT-WAITING_TIMEOUT:
         _LOGGER.warning("Read take too long, wait_time_slot must be added between read_zone.")
 
@@ -170,6 +171,7 @@ while True:
             write_value(writeelement)
             waittime = 0
     except queue.Empty:
+        # no more write, continue to read.
         wait_time_slot()
         continue
 
