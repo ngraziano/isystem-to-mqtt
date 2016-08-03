@@ -9,10 +9,12 @@ The poll_isystem_qtt.py poll the boiler and publish value to mqtt host.
 Usage
 -----
 
-Installation ::
+Installation 
+::
     pip install --upgrade git+https://github.com/ngraziano/isystem-to-mqtt.git
 
-Run ::
+Run
+::
     poll_isystem_mqtt.py --user MQTTUSER --password MQTTPASSWORD --interval 60 --log DEBUG  mqtt.server.example.com
 
 Mode Bimaitre (bimaster)
@@ -38,7 +40,8 @@ Variable READ_TABLE define topic exported to MQTT.
 
 Variable WRITE_TABLE define topic subcribed to send data to boiler.
 
-Main topic are :
+Main topic are:
+
 =========================================== ======================================
 TOPIC                                       Description
 =========================================== ======================================
