@@ -39,7 +39,7 @@ WRITE_TABLE = {
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
     "zone-a/mode-simple/SET": WriteTagDefinition(653, convert.write_derog_bit_simple),
     "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
-    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
+    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit), # do not work, boiler ignore value
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
     "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
 

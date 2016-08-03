@@ -95,10 +95,11 @@ TIME_SLOT = 5
 WAITING_TIMEOUT = 0.4
 
 def wait_time_slot():
+    """ In bi-master mode, wait for the 5s boiler is slave. """
     # if not in bimaster mode no need to wait
     if not args.bimaster:
         return
-    
+
     # Wait a maximum of 3 cycle SLAVE => MASTER => SLAVE
     MAXIMUM_LOOP = 1 + int(TIME_SLOT * 3 / WAITING_TIMEOUT)
     instrument.serial.timeout = WAITING_TIMEOUT
@@ -123,6 +124,7 @@ def wait_time_slot():
     # we are master for a maximum of  4.6s (5s - 400ms)
 
 def read_zone(base_address, number_of_value):
+    """ Read a MODBUS table zone and send the value to MQTT. """
     try:
         raw_values = instrument.read_registers(base_address, number_of_value)
     except EnvironmentError:
@@ -137,11 +139,14 @@ def read_zone(base_address, number_of_value):
                 tag_definition.publish(client, base_topic, raw_values, index)
 
 def write_value(message):
+    """ Write a value receive from MQTT to MODBUS """
     tag_definition = WRITE_TABLE.get(message.topic.strip(base_topic))
     if tag_definition:
         string_value = message.payload.decode("utf-8")
         value = tag_definition.convertion(string_value)
-        print("write value {} : {} => address : {} = {}".format(message.topic.strip(base_topic), string_value, tag_definition.address, value))
+        _LOGGER.debug("write value %s : %s => address : %s = %s",
+                      message.topic.strip(base_topic), string_value,
+                      tag_definition.address, value)
         if value is not None:
             instrument.write_registers(tag_definition.address, value)
 
@@ -167,7 +172,7 @@ while True:
         waittime = args.interval
         while True:
             writeelement = write_queue.get(timeout=waittime)
-           
+
             wait_time_slot()
             write_value(writeelement)
             waittime = 0
