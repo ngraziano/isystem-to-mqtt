@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
 parser.add_argument("--user", help="MQtt username.")
 parser.add_argument("--password", help="MQtt password.")
-parser.add_argument("--interval", help="Check interval default 60.", type=int, default=60)
+parser.add_argument("--interval", help="Check interval default 60s.", type=int, default=60)
 parser.add_argument("--tls12", help="use TLS 1.2", dest="tls",
                     action="store_const", const=ssl.PROTOCOL_TLSv1_2)
 parser.add_argument("--cacert", help="CA Certificate, default /etc/ssl/certs/ca-certificates.crt.",
@@ -157,10 +157,10 @@ wait_time_slot()
 while True:
     # The total read time must be under the time slot duration
     start_time = time.time()
-    read_zone(600, 21)
-    read_zone(507, 4)
-    read_zone(650, 10)
     read_zone(231, 1)
+    read_zone(507, 4)
+    read_zone(600, 21)
+    read_zone(637, 24)
     read_zone(721, 1)
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)

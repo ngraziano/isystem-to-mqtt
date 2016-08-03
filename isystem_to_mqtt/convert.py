@@ -66,6 +66,27 @@ def derog_bit_simple(raw_table, base_index):
         stringvalue = "Automatique"
     return stringvalue
 
+def active_mode(raw_table, base_index):
+    """ Convert mode to french  """
+    value = raw_table[base_index]
+    if value == 0:
+        return "Antigel"
+    if value == 2:
+        return "Nuit"
+    if value == 4:
+        return "Jour"
+    return "Inconnu"
+
+def boiler_mode(raw_table, base_index):
+    """ Convert boiler mode to french  """
+    value = raw_table[base_index]
+    if value == 4:
+        return "Ete"
+    if value == 5:
+        return "Hiver"
+    return "Inconnu"
+
+
 def write_unit(value):
     """ Convert unit value to modbus value """
     return [int(value)]
