@@ -10,7 +10,7 @@ import time
 import minimalmodbus
 import paho.mqtt.client as mqtt
 
-from isystem_to_mqtt.tables import READ_TABLE, WRITE_TABLE
+import isystem_to_mqtt.tables
 
 parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
@@ -29,6 +29,8 @@ parser.add_argument("--log", help="Logging level, default INFO",
                     default="INFO")
 parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)",
                     action="store_true")
+parser.add_argument("--model", help="boiler model",
+                    default="modulens-o")
 args = parser.parse_args()
 
 # Convert to upper case to allow the user to
@@ -39,6 +41,9 @@ if not isinstance(numeric_level, int):
 logging.basicConfig(level=numeric_level)
 
 _LOGGER = logging.getLogger(__name__)
+
+
+(READ_TABLE, WRITE_TABLE, READ_ZONES) = isystem_to_mqtt.tables.get_tables(args.model)
 
 
 # Initialisation of mqtt client
@@ -157,11 +162,12 @@ wait_time_slot()
 while True:
     # The total read time must be under the time slot duration
     start_time = time.time()
-    read_zone(231, 1)
-    read_zone(507, 4)
-    read_zone(600, 21)
-    read_zone(637, 24)
-    read_zone(721, 1)
+    for zone in READ_ZONES:
+        if zone[1] == 0:
+            wait_time_slot()
+        else:
+            read_zone(zone[0],zone[1])
+
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)
     if duration > TIME_SLOT-WAITING_TIMEOUT:

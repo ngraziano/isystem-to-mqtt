@@ -3,7 +3,20 @@
 from .tag_definition import TagDefinition, WriteTagDefinition, MultipleTagDefinition
 from . import convert
 
-READ_TABLE = {
+
+def get_tables(model):
+    """ Return the address definition depending of model. """
+    if model == "modulens-o":
+        return (READ_TABLE_MODULENS_O, WRITE_TABLE_MODULENS_O, ZONE_TABLE_MODULENS_O)
+    return (None, None, None)
+
+ZONE_TABLE_MODULENS_O = [(231, 3),
+                         (507, 4),
+                         (600, 21),
+                         (637, 24),
+                         (721, 4)]
+
+READ_TABLE_MODULENS_O = {
     231: TagDefinition("zone-a/program", convert.unit),
     232: TagDefinition("zone-b/program", convert.unit),
     233: TagDefinition("zone-c/program", convert.unit),
@@ -38,7 +51,7 @@ READ_TABLE = {
 
 }
 
-WRITE_TABLE = {
+WRITE_TABLE_MODULENS_O = {
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
     "zone-a/mode-simple/SET": WriteTagDefinition(653, convert.write_derog_bit_simple),
     "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
