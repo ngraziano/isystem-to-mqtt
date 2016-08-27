@@ -98,7 +98,7 @@ def read_zone(base_address, number_of_value):
     else:
         for index in range(0, number_of_value):
             address = base_address + index
-            print("{0:4d} => {0:5d} ", end='')
+            print("{0:4d} => {1:5d} ".format(address, raw_values[index]), end='')
             tag_definition = READ_TABLE.get(address)
             if tag_definition:
                 tag_definition.print(raw_values, index)
