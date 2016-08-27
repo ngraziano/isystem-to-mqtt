@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import queue
 import logging
-import ssl
 import time
 
 import minimalmodbus
-import paho.mqtt.client as mqtt
 
 import isystem_to_mqtt.tables
 
@@ -101,25 +98,26 @@ def read_zone(base_address, number_of_value):
     else:
         for index in range(0, number_of_value):
             address = base_address + index
-            print ("{0:4d} => {0:5d} ", end='')
+            print("{0:4d} => {0:5d} ", end='')
             tag_definition = READ_TABLE.get(address)
             if tag_definition:
                 tag_definition.print(raw_values, index)
-            print ("\n")
+            print("\n")
 
 wait_time_slot()
-
 
 MAX_NUMBER_BY_READ = 123
 
 # The total read time must be under the time slot duration
 start_time = time.time()
 
-for base_address in range(args.start, args.start + args.number, MAX_NUMBER_BY_READ):
-    read_zone(base_address, min(MAX_NUMBER_BY_READ, args.start + args.number - base_address))
+for start_address in range(args.start, args.start + args.number, MAX_NUMBER_BY_READ):
+    read_zone(start_address, min(MAX_NUMBER_BY_READ, args.start + args.number - start_address))
 
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)
     if duration > TIME_SLOT-WAITING_TIMEOUT:
         wait_time_slot()
+        start_time = time.time()
+
 
