@@ -19,6 +19,11 @@ class TagDefinition(object):
         if value != self.last_value:
             client.publish(base_topic + self.tag_name, value, retain=True)
             self.last_value = value
+    
+    def print(raw_values, index):
+        """" Print the converted value """"
+        value = self.convertion(raw_values, index)
+        print ("\t{0}\t{1}".format(self.tag_name,value), end='')
 
 class MultipleTagDefinition(object):
     """ Define a tag with multiple mqtt topic and convertion """
@@ -38,6 +43,12 @@ class MultipleTagDefinition(object):
                 client.publish(base_topic + tag_name, value, retain=True)
                 self.last_value[i] = value
             i += 1
+
+    def print(raw_values, index):
+        """" Print the converted value """"
+        for (tag_name, convertion) in self.definition_list:
+            value = convertion(raw_values, index)
+            print ("\t{0}\t{1}".format(tag_name,value), end='')
 
 
 class WriteTagDefinition(object):
