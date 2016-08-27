@@ -9,7 +9,7 @@ setup(
     author='Nicolas Graziano',
     author_email='nicolas.graziano+py@gmail.com',
     packages= find_packages(),
-    scripts=['bin/poll_isystem_mqtt.py'],
+    scripts=['bin/poll_isystem_mqtt.py', 'bin/dump_isystem.py'],
     url='https://github.com/ngraziano/isystem-to-mqtt',
     install_requires=['MinimalModbus', 'paho-mqtt'],
     license='LICENSE',
