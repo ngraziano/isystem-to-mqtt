@@ -102,7 +102,7 @@ def read_zone(base_address, number_of_value):
             tag_definition = READ_TABLE.get(address)
             if tag_definition:
                 tag_definition.print(raw_values, index)
-            print("\n")
+            print("")
 
 wait_time_slot()
 
