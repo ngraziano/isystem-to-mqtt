@@ -1,6 +1,7 @@
 """ Unit test for convert functions """
 
 import unittest
+import datetime
 
 from .. import convert
 
@@ -78,6 +79,60 @@ class TestConvertWriteUnit(unittest.TestCase):
         """ Simple string test """
         value = convert.write_unit("105")
         self.assertEqual([105], value)
+
+class TestConvertDaySchedule(unittest.TestCase):
+    """ Test day_schedule function """
+
+    def test_empty(self):
+        """ empty schedule """
+        value = convert.day_schedule([0, 0, 0], 0)
+        self.assertEqual([], value)
+
+    def test_full(self):
+        """ full schedule always on """
+        value = convert.day_schedule([0xFFFF, 0xFFFF, 0xFFFF], 0)
+        self.assertEqual([(datetime.timedelta(), datetime.timedelta(days=1))], value)
+
+    def test_onebit_start_end(self):
+        """ first half of hours and last half of hours """
+        value = convert.day_schedule([0x8000, 0x0000, 0x0001], 0)
+        self.assertEqual(
+            [
+                (datetime.timedelta(), datetime.timedelta(minutes=30)),
+                (datetime.timedelta(hours=23, minutes=30), datetime.timedelta(days=1)),
+            ], value)
+
+    def test_doc(self):
+        """ exemple from documentation """
+        value = convert.day_schedule([0x0003, 0xFFFF, 0xFF00], 0)
+        self.assertEqual([(datetime.timedelta(hours=7), datetime.timedelta(hours=20))], value)
+
+
+    def test_half(self):
+        """ morning """
+        value = convert.day_schedule([0xFFFF, 0xFF00, 0x0000], 0)
+        self.assertEqual([(datetime.timedelta(), datetime.timedelta(hours=12))], value)
+
+class TestConvertJsonWeekSchedule(unittest.TestCase):
+    """ Test json_week_schedule function """
+
+    def test_empty_week(self):
+        """ empty week : always off """
+        schedule = [0] * 21
+
+        value = convert.json_week_schedule(schedule, 0)
+
+        self.assertEqual("{\"0\": [], \"1\": [], \"2\": [], \"3\": [], \"4\": [], \"5\": [], \"6\": []}"
+                         , value)
+
+    def test_full_week(self):
+        """ full week : always on """
+        schedule = [0xFFFF] * 21
+
+        value = convert.json_week_schedule(schedule, 0)
+
+        self.assertEqual("{\"0\": [[\"00:00:00\", \"24:00:00\"]], \"1\": [[\"00:00:00\", \"24:00:00\"]], \"2\": [[\"00:00:00\", \"24:00:00\"]], \"3\": [[\"00:00:00\", \"24:00:00\"]], \"4\": [[\"00:00:00\", \"24:00:00\"]], \"5\": [[\"00:00:00\", \"24:00:00\"]], \"6\": [[\"00:00:00\", \"24:00:00\"]]}"
+                         , value)
 
 
 class TestConvertWriteTenth(unittest.TestCase):

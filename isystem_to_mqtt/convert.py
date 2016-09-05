@@ -1,5 +1,7 @@
 """ Function to convert raw modbus value """
 
+import datetime
+from . import time_delta_json
 
 def unit(raw_table, base_index):
     """ Direct word value """
@@ -86,6 +88,40 @@ def boiler_mode(raw_table, base_index):
         return "Hiver"
     return "Inconnu"
 
+def day_schedule(raw_table, base_index):
+    """ Convert schedule of present/away """
+    current_mode = 0
+    start_time = datetime.timedelta()
+    current_time = datetime.timedelta()
+    schedule = []
+    interval_for_bit = datetime.timedelta(minutes=30)
+    for word in raw_table[base_index:base_index + 3]:
+        for _ in range(16):
+            mode = word & 0x8000
+            word <<= 1
+            # end of period
+            if mode == 0 and current_mode != 0:
+                schedule.append((start_time, current_time))
+                current_mode = mode
+
+            current_time += interval_for_bit
+            # before period
+            if mode == 0:
+                start_time = current_time
+
+            current_mode = mode
+    if current_mode != 0:
+        schedule.append((start_time, current_time))
+
+    return schedule
+
+def json_week_schedule(raw_table, base_index):
+    """ Convert week schedule to a JSON """
+    schedule = {}
+    for day in range(7):
+        schedule[day] = day_schedule(raw_table, base_index + day * 3)
+    encoder = time_delta_json.CustomDateJSONEncoder()
+    return encoder.encode(schedule)
 
 def write_unit(value):
     """ Convert unit value to modbus value """

@@ -17,11 +17,14 @@ ZONE_TABLE_MODULENS_O = [(231, 3),
                          (721, 4)]
 
 READ_TABLE_MODULENS_O = {
+    126: TagDefinition("zone-a/schedule", convert.json_week_schedule, 21),
+    147: TagDefinition("zone-b/schedule", convert.json_week_schedule, 21),
+    168: TagDefinition("zone-c/schedule", convert.json_week_schedule, 21),
     231: TagDefinition("zone-a/program", convert.unit),
     232: TagDefinition("zone-b/program", convert.unit),
     233: TagDefinition("zone-c/program", convert.unit),
-    507: TagDefinition("boiler/start-count", convert.unit_and_ten),
-    509: TagDefinition("boiler/hours-count", convert.unit_and_ten),
+    507: TagDefinition("boiler/start-count", convert.unit_and_ten, 2),
+    509: TagDefinition("boiler/hours-count", convert.unit_and_ten, 2),
     601: TagDefinition("outside/temperature", convert.tenth),
     602: TagDefinition("boiler/temperature", convert.tenth),
     607: TagDefinition("boiler/return-temperature", convert.tenth),
@@ -55,7 +58,8 @@ WRITE_TABLE_MODULENS_O = {
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
     "zone-a/mode-simple/SET": WriteTagDefinition(653, convert.write_derog_bit_simple),
     "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
-    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit), # do not work, boiler ignore value
+    # antifreeze-duration do not work, boiler ignore value
+    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
     "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
 
