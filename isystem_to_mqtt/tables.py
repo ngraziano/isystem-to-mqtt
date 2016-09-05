@@ -17,6 +17,10 @@ ZONE_TABLE_MODULENS_O = [(231, 3),
                          (721, 4)]
 
 READ_TABLE_MODULENS_O = {
+    7: TagDefinition("outside/temperature", convert.tenth),
+    8: TagDefinition("boiler/summer-setpoint", convert.tenth),
+    9: TagDefinition("outside/antifreeze", convert.tenth),
+    11: TagDefinition("boiler/pump-postrun", convert.unit),
     126: TagDefinition("zone-a/schedule", convert.json_week_schedule, 21),
     147: TagDefinition("zone-b/schedule", convert.json_week_schedule, 21),
     168: TagDefinition("zone-c/schedule", convert.json_week_schedule, 21),
