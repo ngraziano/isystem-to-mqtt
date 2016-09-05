@@ -6,6 +6,7 @@ import logging
 import time
 
 import minimalmodbus
+import isystem_to_mqtt.isystem_modbus
 
 import isystem_to_mqtt.tables
 
@@ -40,52 +41,11 @@ _LOGGER = logging.getLogger(__name__)
 
 # Initialisation of Modbus
 minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
-instrument = minimalmodbus.Instrument(args.serial, args.deviceid)
-instrument.serial.baudrate = 9600
-instrument.serial.bytesize = 8
-instrument.serial.parity = minimalmodbus.serial.PARITY_NONE
-instrument.serial.stopbits = 1
-# seconds (0.05 par defaut)
-instrument.serial.timeout = 1
+instrument = isystem_to_mqtt.isystem_modbus.ISystemInstrument(args.serial,
+                                                              args.deviceid,
+                                                              args.bimaster)
 instrument.debug = False   # True or False
-instrument.mode = minimalmodbus.MODE_RTU
 
-
-# Bi master timeslot
-# peer is master for 5s then we can be master for 5s
-# timeout to 400ms
-
-TIME_SLOT = 5
-WAITING_TIMEOUT = 0.4
-
-def wait_time_slot():
-    """ In bi-master mode, wait for the 5s boiler is slave. """
-    # if not in bimaster mode no need to wait
-    if not args.bimaster:
-        return
-
-    # Wait a maximum of 3 cycle SLAVE => MASTER => SLAVE
-    MAXIMUM_LOOP = 1 + int(TIME_SLOT * 3 / WAITING_TIMEOUT)
-    instrument.serial.timeout = WAITING_TIMEOUT
-    # read until boiler is master
-    instrument.serial.open()
-    data = b''
-    number_of_wait = 0
-    _LOGGER.debug("Wait the peer to be master.")
-    #wait a maximum of 6 seconds
-    while len(data) == 0 and number_of_wait < MAXIMUM_LOOP:
-        data = instrument.serial.read(100)
-        number_of_wait += 1
-    if number_of_wait >= MAXIMUM_LOOP:
-        _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
-    # the master is the boiler wait for the end of data
-    _LOGGER.debug("Wait the peer to be slave.")
-    while len(data) != 0:
-        data = instrument.serial.read(100)
-    instrument.serial.close()
-    instrument.serial.timeout = 1.0
-    _LOGGER.debug("We are master.")
-    # we are master for a maximum of  4.6s (5s - 400ms)
 
 def read_zone(base_address, number_of_value):
     """ Read a MODBUS table zone and dump raw and converted. """
@@ -104,7 +64,7 @@ def read_zone(base_address, number_of_value):
                 tag_definition.print(raw_values, index)
             print("")
 
-wait_time_slot()
+instrument.wait_time_slot()
 
 MAX_NUMBER_BY_READ = 123
 
@@ -116,8 +76,8 @@ for start_address in range(args.start, args.start + args.number, MAX_NUMBER_BY_R
 
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)
-    if duration > TIME_SLOT-WAITING_TIMEOUT:
-        wait_time_slot()
+    if duration > isystem_to_mqtt.isystem_modbus.MAXIMUM_OPERATION:
+        instrument.wait_time_slot()
         start_time = time.time()
 
 
