@@ -95,18 +95,25 @@ READ_TABLE_MODULENS_O = {
     659: MultipleTagDefinition([("zone-b/mode", convert.derog_bit),
                                 ("zone-b/mode-raw", convert.unit),
                                 ("zone-b/mode-simple", convert.derog_bit_simple)]),
+    710: TagDefinition("boiler/pcu-stat", convert.unit),
+    711: TagDefinition("boiler/pcu-substat", convert.unit),
+    712: TagDefinition("boiler/pcu-block", convert.unit),
+    713: TagDefinition("boiler/pcu-lock", convert.unit),
     721: TagDefinition("zone-a/antifreeze-duration", convert.unit),
-    724: TagDefinition("zone-b/antifreeze-duration", convert.unit)
+    724: TagDefinition("zone-b/antifreeze-duration", convert.unit),
+    727: TagDefinition("zone-c/antifreeze-duration", convert.unit),
+    734: TagDefinition("boiler/second-calculated-temperature", convert.tenth),
+    735: TagDefinition("boiler/state", convert.unit)
 
 }
 
 WRITE_TABLE_MODULENS_O = {
-    "zone-a/antifreeze-duration/SET": WriteTagDefinition(13, convert.write_unit),
+    # "zone-a/antifreeze-duration/SET": WriteTagDefinition(13, convert.write_unit),
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
     "zone-a/mode-simple/SET": WriteTagDefinition(653, convert.write_derog_bit_simple),
     "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
     # antifreeze-duration do not work, boiler ignore value
-    # "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
+    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
     "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
 
