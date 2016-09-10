@@ -25,8 +25,8 @@ READ_TABLE_MODULENS_O = {
     15: TagDefinition("zone-a/night-target-temperature", convert.tenth),
     16: TagDefinition("zone-a/antifreeze-target-temperature", convert.tenth),
     17: MultipleTagDefinition([("zone-a/mode", convert.derog_bit),
-                                ("zone-a/mode-raw", convert.unit),
-                                ("zone-a/mode-simple", convert.derog_bit_simple)]),
+                               ("zone-a/mode-raw", convert.unit),
+                               ("zone-a/mode-simple", convert.derog_bit_simple)]),
     18: TagDefinition("zone-a/temperature", convert.tenth),
     19: TagDefinition("zone-a/sensor-influence", convert.unit),
     20: TagDefinition("zone-a/curve", convert.tenth),
@@ -35,8 +35,8 @@ READ_TABLE_MODULENS_O = {
     24: TagDefinition("zone-b/night-target-temperature", convert.tenth),
     25: TagDefinition("zone-b/antifreeze-target-temperature", convert.tenth),
     26: MultipleTagDefinition([("zone-b/mode", convert.derog_bit),
-                                ("zone-b/mode-raw", convert.unit),
-                                ("zone-b/mode-simple", convert.derog_bit_simple)]),
+                               ("zone-b/mode-raw", convert.unit),
+                               ("zone-b/mode-simple", convert.derog_bit_simple)]),
     27: TagDefinition("zone-b/temperature", convert.tenth),
     28: TagDefinition("zone-b/sensor-influence", convert.unit),
     29: TagDefinition("zone-b/curve", convert.tenth),
@@ -46,9 +46,9 @@ READ_TABLE_MODULENS_O = {
     35: TagDefinition("zone-c/day-target-temperature", convert.tenth),
     36: TagDefinition("zone-c/night-target-temperature", convert.tenth),
     37: TagDefinition("zone-c/antifreeze-target-temperature", convert.tenth),
-    39: MultipleTagDefinition([("zone-c/mode", convert.derog_bit),
-                                ("zone-c/mode-raw", convert.unit),
-                                ("zone-c/mode-simple", convert.derog_bit_simple)]),
+    38: MultipleTagDefinition([("zone-c/mode", convert.derog_bit),
+                               ("zone-c/mode-raw", convert.unit),
+                               ("zone-c/mode-simple", convert.derog_bit_simple)]),
     39: TagDefinition("zone-c/temperature", convert.tenth),
     40: TagDefinition("zone-c/sensor-influence", convert.unit),
     41: TagDefinition("zone-c/curve", convert.tenth),
@@ -101,11 +101,12 @@ READ_TABLE_MODULENS_O = {
 }
 
 WRITE_TABLE_MODULENS_O = {
+    "zone-a/antifreeze-duration/SET": WriteTagDefinition(13, convert.write_unit),
     "zone-a/program/SET": WriteTagDefinition(231, convert.write_unit),
     "zone-a/mode-simple/SET": WriteTagDefinition(653, convert.write_derog_bit_simple),
     "zone-a/mode-raw/SET": WriteTagDefinition(653, convert.write_unit),
     # antifreeze-duration do not work, boiler ignore value
-    "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
+    # "zone-a/antifreeze-duration/SET": WriteTagDefinition(721, convert.write_unit),
     "zone-a/day-target-temperature/SET": WriteTagDefinition(650, convert.write_tenth),
     "zone-a/night-target-temperature/SET": WriteTagDefinition(651, convert.write_tenth),
 
