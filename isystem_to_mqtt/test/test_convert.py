@@ -134,6 +134,61 @@ class TestConvertJsonWeekSchedule(unittest.TestCase):
         self.assertEqual("{\"0\": [[\"00:00:00\", \"24:00:00\"]], \"1\": [[\"00:00:00\", \"24:00:00\"]], \"2\": [[\"00:00:00\", \"24:00:00\"]], \"3\": [[\"00:00:00\", \"24:00:00\"]], \"4\": [[\"00:00:00\", \"24:00:00\"]], \"5\": [[\"00:00:00\", \"24:00:00\"]], \"6\": [[\"00:00:00\", \"24:00:00\"]]}"
                          , value)
 
+class TestConvertHoursMinutesSecondes(unittest.TestCase):
+    """ Test hours_minutes_secondes function """
+    def test_simple(self):
+        """ simple hours """
+        raw = [10, 11, 12]
+
+        value = convert.hours_minutes_secondes(raw, 0)
+
+        self.assertEqual("10:11:12", value)
+
+    def test_simple2(self):
+        """ simple hours """
+        raw = [1, 2, 3]
+
+        value = convert.hours_minutes_secondes(raw, 0)
+
+        self.assertEqual("01:02:03", value)
+
+class TestConvertDecrese(unittest.TestCase):
+    """ Test Decrease function """
+    def test_stop(self):
+        """ test stop """
+        raw = [0]
+
+        value = convert.decrease(raw, 0)
+
+        self.assertEqual("stop", value)
+
+    def test_decrease(self):
+        """ test decrease """
+        raw = [1]
+
+        value = convert.decrease(raw, 0)
+
+        self.assertEqual("abaissement", value)
+
+class TestConvertOffOn(unittest.TestCase):
+    """ Test off_on function """
+    def test_off(self):
+        """ test off """
+        raw = [0]
+
+        value = convert.off_on(raw, 0)
+
+        self.assertEqual("off", value)
+
+    def test_decrease(self):
+        """ test on """
+        raw = [1]
+
+        value = convert.off_on(raw, 0)
+
+        self.assertEqual("on", value)
+
+
 
 class TestConvertWriteTenth(unittest.TestCase):
     """ Test write_tenth function """
@@ -152,7 +207,6 @@ class TestConvertWriteTenth(unittest.TestCase):
         """ Test with negative value """
         value = convert.write_tenth(-10.5)
         self.assertEqual([0x8069], value)
-
 
 class TestConvertWriteDerogBitSimple(unittest.TestCase):
     """ Test write_derog_bit_simple function """

@@ -123,6 +123,26 @@ def json_week_schedule(raw_table, base_index):
     encoder = time_delta_json.CustomDateJSONEncoder()
     return encoder.encode(schedule)
 
+def hours_minutes_secondes(raw_table, base_index):
+    """ Convert raw value to hours """
+    return "%02d:%02d:%02d" % (raw_table[base_index],
+                               raw_table[base_index+1],
+                               raw_table[base_index+2])
+
+def decrease(raw_table, base_index):
+    """ Convert decrease flag to french """
+    if raw_table[base_index] == 0:
+        return "stop"
+    else:
+        return "abaissement"
+
+def off_on(raw_table, base_index):
+    """ Convert off/on flag to text """
+    if raw_table[base_index] == 0:
+        return "off"
+    else:
+        return "on"
+
 def write_unit(value):
     """ Convert unit value to modbus value """
     return [int(value)]
