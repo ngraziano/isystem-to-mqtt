@@ -11,6 +11,7 @@ import minimalmodbus
 import paho.mqtt.client as mqtt
 
 import isystem_to_mqtt.tables
+import isystem_to_mqtt.isystem_modbus
 
 parser = argparse.ArgumentParser()
 parser.add_argument("server", help="MQtt server to connect to.")
@@ -81,52 +82,11 @@ client.loop_start()
 
 # Initialisation of Modbus
 minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
-instrument = minimalmodbus.Instrument(args.serial, args.deviceid)
-instrument.serial.baudrate = 9600
-instrument.serial.bytesize = 8
-instrument.serial.parity = minimalmodbus.serial.PARITY_NONE
-instrument.serial.stopbits = 1
-# seconds (0.05 par defaut)
-instrument.serial.timeout = 1
+instrument = isystem_to_mqtt.isystem_modbus.ISystemInstrument(args.serial,
+                                                              args.deviceid,
+                                                              args.bimaster)
 instrument.debug = False   # True or False
-instrument.mode = minimalmodbus.MODE_RTU
 
-
-# Bi master timeslot
-# peer is master for 5s then we can be master for 5s
-# timeout to 400ms
-
-TIME_SLOT = 5
-WAITING_TIMEOUT = 0.4
-
-def wait_time_slot():
-    """ In bi-master mode, wait for the 5s boiler is slave. """
-    # if not in bimaster mode no need to wait
-    if not args.bimaster:
-        return
-
-    # Wait a maximum of 3 cycle SLAVE => MASTER => SLAVE
-    MAXIMUM_LOOP = 1 + int(TIME_SLOT * 3 / WAITING_TIMEOUT)
-    instrument.serial.timeout = WAITING_TIMEOUT
-    # read until boiler is master
-    instrument.serial.open()
-    data = b''
-    number_of_wait = 0
-    _LOGGER.debug("Wait the peer to be master.")
-    #wait a maximum of 6 seconds
-    while len(data) == 0 and number_of_wait < MAXIMUM_LOOP:
-        data = instrument.serial.read(100)
-        number_of_wait += 1
-    if number_of_wait >= MAXIMUM_LOOP:
-        _LOGGER.warning("Never get data from peer. Remove --bimaster flag.")
-    # the master is the boiler wait for the end of data
-    _LOGGER.debug("Wait the peer to be slave.")
-    while len(data) != 0:
-        data = instrument.serial.read(100)
-    instrument.serial.close()
-    instrument.serial.timeout = 1.0
-    _LOGGER.debug("We are master.")
-    # we are master for a maximum of  4.6s (5s - 400ms)
 
 def read_zone(base_address, number_of_value):
     """ Read a MODBUS table zone and send the value to MQTT. """
@@ -156,7 +116,7 @@ def write_value(message):
             instrument.write_registers(tag_definition.address, value)
 
 
-wait_time_slot()
+instrument.wait_time_slot()
 
 # Main loop
 while True:
@@ -164,13 +124,13 @@ while True:
     start_time = time.time()
     for zone in READ_ZONES:
         if zone[1] == 0:
-            wait_time_slot()
+            instrument.wait_time_slot()
         else:
             read_zone(zone[0],zone[1])
 
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)
-    if duration > TIME_SLOT-WAITING_TIMEOUT:
+    if duration > isystem_to_mqtt.isystem_modbus.MAXIMUM_OPERATION:
         _LOGGER.warning("Read take too long, wait_time_slot must be added between read_zone.")
 
     # Traitement de toute les ecritures ou attente de l'intervale
@@ -179,11 +139,11 @@ while True:
         while True:
             writeelement = write_queue.get(timeout=waittime)
 
-            wait_time_slot()
+            instrument.wait_time_slot()
             write_value(writeelement)
             waittime = 0
     except queue.Empty:
         # no more write, continue to read.
-        wait_time_slot()
+        instrument.wait_time_slot()
         continue
 
