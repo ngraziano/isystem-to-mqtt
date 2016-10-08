@@ -1,6 +1,7 @@
 """ Function to convert raw modbus value """
 
 import datetime
+import json
 from . import time_delta_json
 
 def unit(raw_table, base_index):
@@ -143,6 +144,45 @@ def off_on(raw_table, base_index):
     else:
         return "on"
 
+OUTPUT1_BURNER                = 3
+OUTPUT1_HYDRAULIC_VALVE_OPEN  = 1 << 2
+OUTPUT1_HYDRAULIC_VALVE_CLOSE = 1 << 3
+OUTPUT1_BOILER_PUMP           = 1 << 4
+# It's ON on my boiler, I want to follow it. 
+OUTPUT1_UNKNOW1               = 1 << 5
+
+OUTPUT2_DHW_PUMP              = 1 << 0
+OUTPUT2_ZONEA_PUMP            = 1 << 1
+OUTPUT2_ZONEB_PUMP            = 1 << 4
+OUTPUT2_ZONEB_3WV_OPEN        = 1 << 5
+OUTPUT2_ZONEB_3WV_CLOSE       = 1 << 6
+OUTPUT2_ZONEC_PUMP            = 1 << 7
+OUTPUT2_ZONEC_3WV_OPEN        = 1 << 8
+OUTPUT2_ZONEC_3WV_CLOSE       = 1 << 9
+OUTPUT2_AUX_PUMP              = 1 << 10
+
+
+def output_state(raw_table, base_index):
+    """ Convert output state to JSON """
+    result = {}
+    val = raw_table[base_index]
+    result["burner"] = val & OUTPUT1_BURNER
+    result["hydraulic_valve_open"] = bool(val & OUTPUT1_HYDRAULIC_VALVE_OPEN)
+    result["hydraulic_valve_close"] = bool(val & OUTPUT1_HYDRAULIC_VALVE_CLOSE)
+    result["hydraulic_boiler_pump"] = bool(val & OUTPUT1_BOILER_PUMP)
+    result["UNKNOWN1"] = bool(val & OUTPUT1_UNKNOW1)
+    val = raw_table[base_index+1]
+    result["DHW_pump"] = bool(val & OUTPUT2_DHW_PUMP)
+    result["zone_A_pump"] = bool(val & OUTPUT2_ZONEA_PUMP)
+    result["zone_B_pump"] = bool(val & OUTPUT2_ZONEB_PUMP)
+    result["zone_B_3WV_open"] = bool(val & OUTPUT2_ZONEB_3WV_OPEN)
+    result["zone_B_3WV_close"] = bool(val & OUTPUT2_ZONEB_3WV_CLOSE)
+    result["zone_C_pump"] = bool(val & OUTPUT2_ZONEC_PUMP)
+    result["zone_C_3WV_open"] = bool(val & OUTPUT2_ZONEC_3WV_OPEN)
+    result["zone_C_3WV_close"] = bool(val & OUTPUT2_ZONEC_3WV_CLOSE)
+    result["AUX_pump"] = bool(val & OUTPUT2_AUX_PUMP)
+    return json.dumps(result)
+    
 def write_unit(value):
     """ Convert unit value to modbus value """
     return [int(value)]

@@ -180,7 +180,7 @@ class TestConvertOffOn(unittest.TestCase):
 
         self.assertEqual("off", value)
 
-    def test_decrease(self):
+    def test_on(self):
         """ test on """
         raw = [1]
 
@@ -189,6 +189,15 @@ class TestConvertOffOn(unittest.TestCase):
         self.assertEqual("on", value)
 
 
+class TestConvertOutputState(unittest.TestCase):
+    """ Test output_state function """
+    def test_all_on(self):
+        """ test all on """
+        raw = [0xffff, 0xffff]
+
+        value = convert.output_state(raw, 0)
+        # TODO check result
+        # self.assertEqual("off", value)
 
 class TestConvertWriteTenth(unittest.TestCase):
     """ Test write_tenth function """

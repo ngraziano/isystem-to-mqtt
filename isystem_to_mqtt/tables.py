@@ -12,6 +12,7 @@ def get_tables(model):
 
 ZONE_TABLE_MODULENS_O = [(231, 3),
                          (507, 4),
+                         (471, 10),
                          (600, 21),
                          (637, 24),
                          (721, 4)]
@@ -84,6 +85,10 @@ READ_TABLE_MODULENS_O = {
     277: TagDefinition("zone-c/calibration", convert.tenth),
     298: TagDefinition("zone-a/min-temperature", convert.tenth),
     299: TagDefinition("zone-a/max-temperature", convert.tenth),
+    471: TagDefinition("boiler/power-inst", convert.tenth),
+    472: TagDefinition("boiler/power-average", convert.tenth),
+    473: TagDefinition("boiler/modulated-power", convert.unit),
+    474: TagDefinition("boiler/output-state", convert.output_state, 2),
     507: TagDefinition("boiler/start-count", convert.unit_and_ten, 2),
     509: TagDefinition("boiler/hours-count", convert.unit_and_ten, 2),
     601: TagDefinition("outside/temperature", convert.tenth),
