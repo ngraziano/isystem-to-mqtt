@@ -85,6 +85,8 @@ READ_TABLE_MODULENS_O = {
     277: TagDefinition("zone-c/calibration", convert.tenth),
     298: TagDefinition("zone-a/min-temperature", convert.tenth),
     299: TagDefinition("zone-a/max-temperature", convert.tenth),
+    437: TagDefinition("boiler/pressure", convert.tenth),
+    455: TagDefinition("boiler/fan-speed", convert.unit),
     471: TagDefinition("boiler/power-inst", convert.tenth),
     472: TagDefinition("boiler/power-average", convert.tenth),
     473: TagDefinition("boiler/modulated-power", convert.unit),
