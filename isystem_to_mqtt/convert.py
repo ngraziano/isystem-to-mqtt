@@ -4,9 +4,14 @@ import datetime
 import json
 from . import time_delta_json
 
+
 def unit(raw_table, base_index):
     """ Direct word value """
-    return raw_table[base_index]
+    raw_value = raw_table[base_index]
+    sign = 1
+    if raw_value & 0x8000:
+        sign = -1
+    return sign * (raw_value & 0x7FFF)
 
 
 def tenth(raw_table, base_index):
@@ -17,7 +22,7 @@ def tenth(raw_table, base_index):
     sign = 1
     if raw_value & 0x8000:
         sign = -1
-    return  sign * (raw_value & 0x7FFF) / 10
+    return sign * (raw_value & 0x7FFF) / 10
 
 
 def unit_and_ten(raw_table, base_index):
@@ -32,6 +37,7 @@ BIT_DHW = 16
 BIT_END_OF_PROGRAM = 32
 BIT_DHW_END_OF_PROGRAM = 64
 BIT_ALL_ZONE = 128
+
 
 def derog_bit(raw_table, base_index):
     """ Convert derog bit flag to french """
@@ -55,6 +61,7 @@ def derog_bit(raw_table, base_index):
         stringvalue += "toutes les zones"
     return stringvalue
 
+
 def derog_bit_simple(raw_table, base_index):
     """ Convert derog bit flag to french do not handle all case """
     value = raw_table[base_index]
@@ -69,6 +76,7 @@ def derog_bit_simple(raw_table, base_index):
         stringvalue = "Automatique"
     return stringvalue
 
+
 def active_mode(raw_table, base_index):
     """ Convert mode to french  """
     value = raw_table[base_index]
@@ -80,6 +88,7 @@ def active_mode(raw_table, base_index):
         return "Jour"
     return "Inconnu"
 
+
 def boiler_mode(raw_table, base_index):
     """ Convert boiler mode to french  """
     value = raw_table[base_index]
@@ -88,6 +97,7 @@ def boiler_mode(raw_table, base_index):
     if value == 5:
         return "Hiver"
     return "Inconnu"
+
 
 def day_schedule(raw_table, base_index):
     """ Convert schedule of present/away """
@@ -116,6 +126,7 @@ def day_schedule(raw_table, base_index):
 
     return schedule
 
+
 def json_week_schedule(raw_table, base_index):
     """ Convert week schedule to a JSON """
     schedule = {}
@@ -124,11 +135,13 @@ def json_week_schedule(raw_table, base_index):
     encoder = time_delta_json.CustomDateJSONEncoder()
     return encoder.encode(schedule)
 
+
 def hours_minutes_secondes(raw_table, base_index):
     """ Convert raw value to hours """
     return "%02d:%02d:%02d" % (raw_table[base_index],
-                               raw_table[base_index+1],
-                               raw_table[base_index+2])
+                               raw_table[base_index + 1],
+                               raw_table[base_index + 2])
+
 
 def decrease(raw_table, base_index):
     """ Convert decrease flag to french """
@@ -137,6 +150,7 @@ def decrease(raw_table, base_index):
     else:
         return "abaissement"
 
+
 def off_on(raw_table, base_index):
     """ Convert off/on flag to text """
     if raw_table[base_index] == 0:
@@ -144,22 +158,22 @@ def off_on(raw_table, base_index):
     else:
         return "on"
 
-OUTPUT1_BURNER                = 3
-OUTPUT1_HYDRAULIC_VALVE_OPEN  = 1 << 2
+OUTPUT1_BURNER = 3
+OUTPUT1_HYDRAULIC_VALVE_OPEN = 1 << 2
 OUTPUT1_HYDRAULIC_VALVE_CLOSE = 1 << 3
-OUTPUT1_BOILER_PUMP           = 1 << 4
-# It's ON on my boiler, I want to follow it. 
-OUTPUT1_UNKNOW1               = 1 << 5
+OUTPUT1_BOILER_PUMP = 1 << 4
+# It's ON on my boiler, I want to follow it.
+OUTPUT1_UNKNOW1 = 1 << 5
 
-OUTPUT2_DHW_PUMP              = 1 << 0
-OUTPUT2_ZONEA_PUMP            = 1 << 1
-OUTPUT2_ZONEB_PUMP            = 1 << 4
-OUTPUT2_ZONEB_3WV_OPEN        = 1 << 5
-OUTPUT2_ZONEB_3WV_CLOSE       = 1 << 6
-OUTPUT2_ZONEC_PUMP            = 1 << 7
-OUTPUT2_ZONEC_3WV_OPEN        = 1 << 8
-OUTPUT2_ZONEC_3WV_CLOSE       = 1 << 9
-OUTPUT2_AUX_PUMP              = 1 << 10
+OUTPUT2_DHW_PUMP = 1 << 0
+OUTPUT2_ZONEA_PUMP = 1 << 1
+OUTPUT2_ZONEB_PUMP = 1 << 4
+OUTPUT2_ZONEB_3WV_OPEN = 1 << 5
+OUTPUT2_ZONEB_3WV_CLOSE = 1 << 6
+OUTPUT2_ZONEC_PUMP = 1 << 7
+OUTPUT2_ZONEC_3WV_OPEN = 1 << 8
+OUTPUT2_ZONEC_3WV_CLOSE = 1 << 9
+OUTPUT2_AUX_PUMP = 1 << 10
 
 
 def output_state(raw_table, base_index):
@@ -171,7 +185,7 @@ def output_state(raw_table, base_index):
     result["hydraulic_valve_close"] = bool(val & OUTPUT1_HYDRAULIC_VALVE_CLOSE)
     result["hydraulic_boiler_pump"] = bool(val & OUTPUT1_BOILER_PUMP)
     result["UNKNOWN1"] = bool(val & OUTPUT1_UNKNOW1)
-    val = raw_table[base_index+1]
+    val = raw_table[base_index + 1]
     result["DHW_pump"] = bool(val & OUTPUT2_DHW_PUMP)
     result["zone_A_pump"] = bool(val & OUTPUT2_ZONEA_PUMP)
     result["zone_B_pump"] = bool(val & OUTPUT2_ZONEB_PUMP)
@@ -182,10 +196,12 @@ def output_state(raw_table, base_index):
     result["zone_C_3WV_close"] = bool(val & OUTPUT2_ZONEC_3WV_CLOSE)
     result["AUX_pump"] = bool(val & OUTPUT2_AUX_PUMP)
     return json.dumps(result)
-    
+
+
 def write_unit(value):
     """ Convert unit value to modbus value """
     return [int(value)]
+
 
 def write_tenth(value):
     """ Convert tenth value to modbus value """
@@ -196,10 +212,12 @@ def write_tenth(value):
 
 DEROG_NAME_TO_VALUE = {
     "Vacances": BIT_ANTIFREEZE | BIT_END_OF_PROGRAM,
-    "Nuit" : BIT_NIGHT | BIT_END_OF_PROGRAM,
-    "Jour" : BIT_DAY | BIT_END_OF_PROGRAM,
-    "Automatique" : BIT_AUTO
-    }
+    "Nuit": BIT_NIGHT | BIT_END_OF_PROGRAM,
+    "Jour": BIT_DAY | BIT_END_OF_PROGRAM,
+    "Automatique": BIT_AUTO
+}
+
+
 def write_derog_bit_simple(value):
     """ Convert French Mode to bit value """
     if value not in DEROG_NAME_TO_VALUE:
