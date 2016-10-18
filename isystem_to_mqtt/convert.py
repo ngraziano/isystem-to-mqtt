@@ -197,6 +197,10 @@ def output_state(raw_table, base_index):
     result["AUX_pump"] = bool(val & OUTPUT2_AUX_PUMP)
     return json.dumps(result)
 
+def fan(raw_table, base_index):
+    """ Convert for fan speed """
+    val = raw_table[base_index]
+    return val & 0x007F
 
 def write_unit(value):
     """ Convert unit value to modbus value """
