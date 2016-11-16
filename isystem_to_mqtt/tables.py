@@ -10,12 +10,13 @@ def get_tables(model):
         return (READ_TABLE_MODULENS_O, WRITE_TABLE_MODULENS_O, ZONE_TABLE_MODULENS_O)
     return (None, None, None)
 
-ZONE_TABLE_MODULENS_O = [(231, 3),
+ZONE_TABLE_MODULENS_O = [(231, 20),
                          (507, 4),
                          (471, 10),
                          (600, 21),
                          (637, 24),
-                         (721, 4)]
+                         (721, 4),
+                         (788, 9),]
 
 READ_TABLE_MODULENS_O = {
     3: TagDefinition("boiler/version", convert.unit),
@@ -87,6 +88,9 @@ READ_TABLE_MODULENS_O = {
     231: TagDefinition("zone-a/program", convert.unit),
     232: TagDefinition("zone-b/program", convert.unit),
     233: TagDefinition("zone-c/program", convert.unit),
+    247: TagDefinition("zone-a/autoadapt-shift", convert.tenth),
+    248: TagDefinition("zone-b/autoadapt-shift", convert.tenth),
+    249: TagDefinition("zone-c/autoadapt-shift", convert.tenth),
     274: TagDefinition("outside/calibration", convert.tenth),
     275: TagDefinition("zone-a/calibration", convert.tenth),
     276: TagDefinition("zone-b/calibration", convert.tenth),
