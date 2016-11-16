@@ -52,6 +52,33 @@ class TestConvertUnitAndTen(unittest.TestCase):
         value = convert.unit_and_ten([9, 10], 0)
         self.assertEqual(109, value)
 
+class TestConvertAnticipation(unittest.TestCase):
+    """ Test powe function """
+
+    def test_simple(self):
+        """ Simple test """
+        value = convert.anticipation([1, 2, 3], 0)
+        self.assertEqual(0.1, value)
+
+    def test_none(self):
+        """ Test Maximum value """
+        value = convert.anticipation([101, 999, 999], 0)
+        self.assertEqual(None, value)
+
+
+class TestConvertPower(unittest.TestCase):
+    """ Test powe function """
+
+    def test_simple(self):
+        """ Simple test """
+        value = convert.power([1, 2, 3], 0)
+        self.assertEqual(1002003, value)
+
+    def test_max_value(self):
+        """ Test Maximum value """
+        value = convert.power([999, 999, 999], 0)
+        self.assertEqual(999999999, value)
+
 
 class TestConvertDerogBitSimple(unittest.TestCase):
     """ Test write_derog_bit_simple function """

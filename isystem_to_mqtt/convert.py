@@ -29,6 +29,17 @@ def unit_and_ten(raw_table, base_index):
     """ Two word values, 0000x and xxxx0 """
     return raw_table[base_index] + 10 * raw_table[base_index + 1]
 
+def anticipation(raw_table, base_index):
+    """ 101 for None or value divide by ten """
+    raw_value = raw_table[base_index]
+    if raw_value == 101:
+        return None
+    return raw_value / 10
+
+def power(raw_table, base_index):
+    """ Value of MWh, KWh, Wh """
+    return (raw_table[base_index] * 1000 + raw_table[base_index+1]) * 1000 + raw_table[base_index+2]
+
 BIT_ANTIFREEZE = 1
 BIT_NIGHT = 2
 BIT_DAY = 4

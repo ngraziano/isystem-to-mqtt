@@ -25,7 +25,7 @@ READ_TABLE_MODULENS_O = {
     9: TagDefinition("outside/antifreeze", convert.tenth),
     10: TagDefinition("boiler/decrease-mode", convert.decrease),
     11: TagDefinition("boiler/pump-postrun", convert.unit),
-    12: TagDefinition("boiler/auto-adaptative", convert.off_on),
+    12: TagDefinition("boiler/auto-adaptative", convert.off_on), #FIXME inverse sur ma chaudiere
     14: TagDefinition("zone-a/day-target-temperature", convert.tenth),
     15: TagDefinition("zone-a/night-target-temperature", convert.tenth),
     16: TagDefinition("zone-a/antifreeze-target-temperature", convert.tenth),
@@ -91,6 +91,9 @@ READ_TABLE_MODULENS_O = {
     275: TagDefinition("zone-a/calibration", convert.tenth),
     276: TagDefinition("zone-b/calibration", convert.tenth),
     277: TagDefinition("zone-c/calibration", convert.tenth),
+    282: TagDefinition("zone-a/anticipation", convert.anticipation),
+    283: TagDefinition("zone-b/anticipation", convert.anticipation),
+    284: TagDefinition("zone-c/anticipation", convert.anticipation),
     289: TagDefinition("zone-a/day-curve-footprint", convert.tenth),
     290: TagDefinition("zone-a/night-curve-footprint", convert.tenth),
     291: TagDefinition("zone-b/day-curve-footprint", convert.tenth),
@@ -178,7 +181,10 @@ READ_TABLE_MODULENS_O = {
     724: TagDefinition("zone-b/antifreeze-duration", convert.unit),
     727: TagDefinition("zone-c/antifreeze-duration", convert.unit),
     734: TagDefinition("boiler/second-calculated-temperature", convert.tenth),
-    735: TagDefinition("boiler/state", convert.unit)
+    735: TagDefinition("boiler/state", convert.unit),
+    788: TagDefinition("boiler/heating-power", convert.power),
+    791: TagDefinition("boiler/dhw-power", convert.power),
+    794: TagDefinition("boiler/cooling-power", convert.power)
 
 }
 
