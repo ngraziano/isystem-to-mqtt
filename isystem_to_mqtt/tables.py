@@ -186,9 +186,9 @@ READ_TABLE_MODULENS_O = {
     727: TagDefinition("zone-c/antifreeze-duration", convert.unit),
     734: TagDefinition("boiler/second-calculated-temperature", convert.tenth),
     735: TagDefinition("boiler/state", convert.unit),
-    788: TagDefinition("boiler/heating-power", convert.power),
-    791: TagDefinition("boiler/dhw-power", convert.power),
-    794: TagDefinition("boiler/cooling-power", convert.power)
+    788: TagDefinition("boiler/heating-power", convert.power, 3),
+    791: TagDefinition("boiler/dhw-power", convert.power, 3),
+    794: TagDefinition("boiler/cooling-power", convert.power, 3)
 
 }
 

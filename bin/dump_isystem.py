@@ -56,12 +56,19 @@ def read_zone(base_address, number_of_value):
     except ValueError:
         logging.exception("Value error")
     else:
+        next_not_used_adress = 0
         for index in range(0, number_of_value):
             address = base_address + index
             print("{0:4d} => {1:5d} ".format(address, raw_values[index]), end='')
             tag_definition = READ_TABLE.get(address)
             if tag_definition:
                 tag_definition.print(raw_values, index)
+                next_not_used_adress = max(
+                    next_not_used_adress,
+                    address + tag_definition.needed_value)
+            else:
+                if address < next_not_used_adress:
+                    print("^", end='')
             print("")
 
 instrument.wait_time_slot()
