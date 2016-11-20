@@ -34,7 +34,15 @@ def anticipation(raw_table, base_index):
     raw_value = raw_table[base_index]
     if raw_value == 101:
         return None
-    return raw_value / 10
+    return tenth(raw_table, base_index)
+
+def footprint(raw_table, base_index):
+    """ 150 for None or value divide by ten """
+    raw_value = raw_table[base_index]
+    if raw_value == 150:
+        return None
+    return tenth(raw_table, base_index)
+
 
 def power(raw_table, base_index):
     """ Value of MWh, KWh, Wh """
@@ -152,6 +160,12 @@ def hours_minutes_secondes(raw_table, base_index):
     return "%02d:%02d:%02d" % (raw_table[base_index],
                                raw_table[base_index + 1],
                                raw_table[base_index + 2])
+
+def hours_minutes(raw_table, base_index):
+    """ Convert raw value to hours """
+    return "%02d:%02d" % (raw_table[base_index],
+                          raw_table[base_index + 1])
+
 
 def day_mounth_year(raw_table, base_index):
     """ Convert raw value to date """
