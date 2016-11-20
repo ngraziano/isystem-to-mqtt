@@ -153,6 +153,11 @@ def hours_minutes_secondes(raw_table, base_index):
                                raw_table[base_index + 1],
                                raw_table[base_index + 2])
 
+def day_mounth_year(raw_table, base_index):
+    """ Convert raw value to date """
+    return "%02d/%02d/%02d" % (raw_table[base_index],
+                               raw_table[base_index + 1],
+                               raw_table[base_index + 2])
 
 def decrease(raw_table, base_index):
     """ Convert decrease flag to french """
@@ -206,6 +211,31 @@ def output_state(raw_table, base_index):
     result["zone_C_3WV_open"] = bool(val & OUTPUT2_ZONEC_3WV_OPEN)
     result["zone_C_3WV_close"] = bool(val & OUTPUT2_ZONEC_3WV_CLOSE)
     result["AUX_pump"] = bool(val & OUTPUT2_AUX_PUMP)
+    return json.dumps(result)
+
+BASEECS_AUX_PUMP = 1
+BASEECS_ZONEA_PUMP_BOILER = 1 << 1
+BASEECS_BURNER_1_2 = 1 << 2
+BASEECS_BURNER_1_1 = 1 << 3
+BASEECS_ZONEA_PUMP = 1 << 4
+BASEECS_DHW_PUMP = 1 << 5
+BASEECS_ALARM_BURNER = 1 << 6
+# BASEECS_ = 1 << 7
+BASEECS_VALVE = 1 << 8
+
+def base_ecs(raw_table, base_index):
+    """ Convert base_ecs state to JSON """
+    result = {}
+    val = raw_table[base_index]
+    result["AUX_pump"] = bool(val & BASEECS_AUX_PUMP)
+    result["zone_A_pump_boiler"] = bool(val & BASEECS_ZONEA_PUMP_BOILER)
+    result["burner_1_2"] = bool(val & BASEECS_BURNER_1_2)
+    result["burner_1_1"] = bool(val & BASEECS_BURNER_1_1)
+    result["zone_A_pump"] = bool(val & BASEECS_ZONEA_PUMP)
+    result["DHW_pump"] = bool(val & BASEECS_DHW_PUMP)
+    result["Alarm_burner"] = bool(val & BASEECS_ALARM_BURNER)
+    result["valve"] = bool(val & BASEECS_VALVE)
+
     return json.dumps(result)
 
 def fan(raw_table, base_index):
