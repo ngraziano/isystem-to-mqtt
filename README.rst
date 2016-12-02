@@ -13,7 +13,11 @@ Installation
 ::
     pip install --upgrade git+https://github.com/ngraziano/isystem-to-mqtt.git
 
-Run
+Read all the value from boiler for testing
+::
+    dump_isystem.py --serial /dev/ttyUSB0 --deviceid 10 
+
+Run the mqtt publish daemon
 ::
     poll_isystem_mqtt.py --user MQTTUSER --password MQTTPASSWORD --interval 60 --log DEBUG  mqtt.server.example.com
 
@@ -29,16 +33,21 @@ This mode is not well tested, ti may not work.
 Hardware connection
 -------------------
 
-TODO
+On my system there is two 4 pin mini DIN connectors for the connection (MODBUS RS-485).
+
+For the connection I use an USB to RS485 adapter : USB-RS485-WE-1800-BT. I connected the Data- B Yellow wire on pin 3
+(up right with connector in front of you and plastic pin a the bottom) and the Data+ A Orange wire on pin 4 (low right).
 
 MQTT Topic
 ----------
 
 Available mqtt topic can be found in isystem_to_mqtt/tables.py.
 
-Variable READ_TABLE define topic exported to MQTT.
+Variable ZONE_TABLE_MODULENS_O define zone to read.
 
-Variable WRITE_TABLE define topic subcribed to send data to boiler.
+Variable READ_TABLE_MODULENS_O define topic exported to MQTT.
+
+Variable WRITE_TABLE_MODULENS_O define topic subcribed to send data to boiler.
 
 Main topic are:
 
