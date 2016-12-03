@@ -1,6 +1,9 @@
 """ Unit test for TagDefinition class """
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 
-import unittest.mock as mock
 import unittest
 
 import paho.mqtt.client as mqtt
