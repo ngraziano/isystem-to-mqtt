@@ -7,10 +7,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
-import queue
 import logging
 import ssl
 import time
+
+try:
+    import queue
+except ImportError:
+    import Queue as queue
 
 import minimalmodbus
 import paho.mqtt.client as mqtt
