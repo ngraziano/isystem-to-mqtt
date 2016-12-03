@@ -2,6 +2,11 @@
 Interface for ISystem boiler to MQTT 
 ====================================
 
+.. image:: https://travis-ci.org/ngraziano/isystem-to-mqtt.svg?branch=master
+    :target: https://travis-ci.org/ngraziano/isystem-to-mqtt
+.. image:: https://coveralls.io/repos/github/ngraziano/isystem-to-mqtt/badge.svg?branch=master
+    :target: https://coveralls.io/github/ngraziano/isystem-to-mqtt?branch=master
+
 The poll_isystem_qtt.py poll the boiler and publish value to mqtt host.
 
 
