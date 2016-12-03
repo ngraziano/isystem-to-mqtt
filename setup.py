@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='isystem-to-mqtt',
-    version='0.1.0',
+    version='0.2.0',
     author='Nicolas Graziano',
     author_email='nicolas.graziano+py@gmail.com',
     packages= find_packages(),
@@ -14,5 +14,6 @@ setup(
     install_requires=['MinimalModbus', 'paho-mqtt'],
     license='LICENSE',
     description='Request Isystem boiler and send value to mqtt',
+    classifiers=['Programming Language :: Python :: 3']
     # long_description=open('README.md').read(),
 )
