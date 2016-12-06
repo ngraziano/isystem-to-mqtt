@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import argparse
 import logging
-import ssl
 import time
 
 try:
@@ -26,8 +25,6 @@ parser.add_argument("server", help="MQtt server to connect to.")
 parser.add_argument("--user", help="MQtt username.")
 parser.add_argument("--password", help="MQtt password.")
 parser.add_argument("--interval", help="Check interval default 60s.", type=int, default=60)
-parser.add_argument("--tls12", help="use TLS 1.2", dest="tls",
-                    action="store_const", const=ssl.PROTOCOL_TLSv1_2)
 parser.add_argument("--cacert", help="CA Certificate, default /etc/ssl/certs/ca-certificates.crt.",
                     default="/etc/ssl/certs/ca-certificates.crt")
 parser.add_argument("--serial", help="Serial interface, default /dev/ttyUSB0",
@@ -40,6 +37,15 @@ parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)"
                     action="store_true")
 parser.add_argument("--model", help="boiler model",
                     default="modulens-o")
+
+# handle no sll.PROTOCOL_TLSv1_2
+try:
+    import ssl
+    parser.add_argument("--tls12", help="use TLS 1.2", dest="tls",
+                        action="store_const", const=ssl.PROTOCOL_TLSv1_2)
+except:
+    pass
+
 args = parser.parse_args()
 
 # Convert to upper case to allow the user to
