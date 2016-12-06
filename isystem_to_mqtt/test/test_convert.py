@@ -79,6 +79,11 @@ class TestConvertPower(unittest.TestCase):
         value = convert.power([999, 999, 999], 0)
         self.assertEqual(999999999, value)
 
+    def test_no_value(self):
+        """ Test Maximum value """
+        value = convert.power([65535, 65535, 65535], 0)
+        self.assertEqual(None, value)
+
 
 class TestConvertDerogBitSimple(unittest.TestCase):
     """ Test write_derog_bit_simple function """

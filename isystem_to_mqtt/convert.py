@@ -49,7 +49,11 @@ def footprint(raw_table, base_index):
 
 
 def power(raw_table, base_index):
-    """ Value of MWh, KWh, Wh """
+    """ Value of MWh, KWh, Wh or None if 65535 """
+    if (raw_table[base_index] == 0xFFFF
+            or raw_table[base_index+1] == 0xFFFF
+            or raw_table[base_index+2] == 0xFFFF):
+        return None
     return (raw_table[base_index] * 1000 + raw_table[base_index+1]) * 1000 + raw_table[base_index+2]
 
 BIT_ANTIFREEZE = 1
