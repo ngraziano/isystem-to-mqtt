@@ -62,8 +62,10 @@ port_mqtt = 1883
 client = mqtt.Client()
 # client.on_log = on_log
 if args.user:
+    _LOGGER.debug("Authenticate with user %s", args.user)
     client.username_pw_set(args.user, args.password)
 if args.tls:
+    _LOGGER.debug("Set TLS mode.")
     client.tls_set(args.cacert, tls_version=args.tls)
     port_mqtt = 8883
 
