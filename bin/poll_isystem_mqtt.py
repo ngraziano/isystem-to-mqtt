@@ -142,7 +142,7 @@ while True:
         if zone[1] == 0:
             instrument.wait_time_slot()
         else:
-            read_zone(zone[0],zone[1])
+            read_zone(zone[0], zone[1])
 
     duration = time.time() - start_time
     _LOGGER.debug("Read take %1.3fs", duration)
