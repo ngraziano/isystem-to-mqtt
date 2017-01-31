@@ -71,10 +71,10 @@ if args.user:
     _LOGGER.debug("Authenticate with user %s", args.user)
     client.username_pw_set(args.user, args.password)
 try:
-	if args.tls:
-		_LOGGER.debug("Set TLS mode.")
-		client.tls_set(args.cacert, tls_version=args.tls)
-		port_mqtt = 8883
+    if args.tls:
+        _LOGGER.debug("Set TLS mode.")
+        client.tls_set(args.cacert, tls_version=args.tls)
+        port_mqtt = 8883
 except:
     pass
 
