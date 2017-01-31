@@ -139,6 +139,8 @@ instrument.wait_time_slot()
 
 # Main loop
 while True:
+    # update watchdog (reset by will)
+    client.publish(base_topic + "reading", "ON", 1, True)
     # The total read time must be under the time slot duration
     start_time = time.time()
     for zone in READ_ZONES:
