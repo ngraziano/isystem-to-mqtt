@@ -231,6 +231,25 @@ class TestConvertOutputState(unittest.TestCase):
         # TODO check result
         # self.assertEqual("off", value)
 
+
+class TestConvertText14(unittest.TestCase):
+    """ Test Text14 function """
+    def test_all_on(self):
+        """ test my data """
+        raw = [8260,
+               18757,
+               19777,
+               21577,
+               17198,
+               13344,
+               8224,
+               8225,
+              ]
+
+        value = convert.texte14(raw, 0)
+        self.assertEqual(" DIEMATIC.4   ", value)
+
+
 class TestConvertWriteTenth(unittest.TestCase):
     """ Test write_tenth function """
 
