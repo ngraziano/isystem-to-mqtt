@@ -27,6 +27,8 @@ parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)"
                     action="store_true")
 parser.add_argument("--model", help="boiler model",
                     default="modulens-o")
+parser.add_argument("--lang", help="language in text message",
+                    default="en")
 args = parser.parse_args()
 
 # Convert to upper case to allow the user to
@@ -39,7 +41,7 @@ logging.basicConfig(level=numeric_level)
 _LOGGER = logging.getLogger(__name__)
 
 
-(READ_TABLE, WRITE_TABLE, READ_ZONES) = isystem_to_mqtt.tables.get_tables(args.model)
+(READ_TABLE, WRITE_TABLE, READ_ZONES) = isystem_to_mqtt.tables.get_tables_translated(args.model, args.lang)
 
 
 

@@ -90,13 +90,13 @@ class TestConvertDerogBitSimple(unittest.TestCase):
 
     def test_simple(self):
         """ Simple test """
-        self.assertEqual("Automatique", convert.derog_bit_simple([8], 0))
-        self.assertEqual("Jour", convert.derog_bit_simple([36], 0))
-        self.assertEqual("Jour", convert.derog_bit_simple([4], 0))
-        self.assertEqual("Nuit", convert.derog_bit_simple([34], 0))
-        self.assertEqual("Nuit", convert.derog_bit_simple([2], 0))
-        self.assertEqual("Vacances", convert.derog_bit_simple([33], 0))
-        self.assertEqual("Vacances", convert.derog_bit_simple([1], 0))
+        self.assertEqual("Automatique", convert.derog_bit_simple_french([8], 0))
+        self.assertEqual("Jour", convert.derog_bit_simple_french([36], 0))
+        self.assertEqual("Jour", convert.derog_bit_simple_french([4], 0))
+        self.assertEqual("Nuit", convert.derog_bit_simple_french([34], 0))
+        self.assertEqual("Nuit", convert.derog_bit_simple_french([2], 0))
+        self.assertEqual("Vacances", convert.derog_bit_simple_french([33], 0))
+        self.assertEqual("Vacances", convert.derog_bit_simple_french([1], 0))
 
 
 class TestConvertWriteUnit(unittest.TestCase):
@@ -186,19 +186,19 @@ class TestConvertHoursMinutesSecondes(unittest.TestCase):
 
 class TestConvertDecrese(unittest.TestCase):
     """ Test Decrease function """
-    def test_stop(self):
+    def test_stop_french(self):
         """ test stop """
         raw = [0]
 
-        value = convert.decrease(raw, 0)
+        value = convert.decrease_french(raw, 0)
 
         self.assertEqual("stop", value)
 
-    def test_decrease(self):
+    def test_decrease_french(self):
         """ test decrease """
         raw = [1]
 
-        value = convert.decrease(raw, 0)
+        value = convert.decrease_french(raw, 0)
 
         self.assertEqual("abaissement", value)
 

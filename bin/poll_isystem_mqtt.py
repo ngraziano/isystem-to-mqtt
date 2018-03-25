@@ -37,7 +37,8 @@ parser.add_argument("--bimaster", help="bi-master mode (5s for peer, 5s for us)"
                     action="store_true")
 parser.add_argument("--model", help="boiler model",
                     default="modulens-o")
-
+parser.add_argument("--lang", help="language in mqtt message",
+                    default="en")
 # handle no sll.PROTOCOL_TLSv1_2
 try:
     import ssl
@@ -58,7 +59,7 @@ logging.basicConfig(level=numeric_level)
 _LOGGER = logging.getLogger(__name__)
 
 
-(READ_TABLE, WRITE_TABLE, READ_ZONES) = isystem_to_mqtt.tables.get_tables(args.model)
+(READ_TABLE, WRITE_TABLE, READ_ZONES) = isystem_to_mqtt.tables.get_tables_translated(args.model, args.lang)
 
 
 # Initialisation of mqtt client
