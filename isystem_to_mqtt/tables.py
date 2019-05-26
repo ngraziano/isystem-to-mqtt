@@ -56,6 +56,9 @@ def get_tables_translated(model, lang):
 
     return (readtabletranslate, writetable, zones)
 
+# Table that define the read value
+# First value modbus adress
+# Second value number of word
 ZONE_TABLE_MODULENS_O = [(231, 20),
                          (507, 4),
                          (471, 10),
